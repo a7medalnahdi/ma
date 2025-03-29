@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة تحكم الجلسة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #333;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #ffc107;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #rolesReveal p {
+      margin: 10px 0;
+      background: #111;
+      border: 1px solid #ffc107;
+      padding: 10px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>👥 لوحة المدير</h1>
+    <h3>اللاعبين المنضمين:</h3>
+    <ul id="playersList"></ul>
+    <button onclick="startGame()">🚀 بدء اللعبة</button>
+    <div id="rolesReveal" style="margin-top: 20px;"></div>
+  </div>
+</body>
+</html>
