@@ -213,7 +213,6 @@
     }
 
     function updateRole() {
-      // Show the new card after distribution
       document.getElementById("roleImage").style.display = "block";
       const roleName = document.getElementById("roleName");
       roleName.innerText = "دورك: " + roleName.innerText;
@@ -221,7 +220,6 @@
     }
 
     function redistributeRoles() {
-      // Hide current card and show countdown
       document.getElementById("roleImage").style.display = "none";
       document.getElementById("countdownBox").style.display = "block";
       document.getElementById("waitingMessage").style.display = "none";
