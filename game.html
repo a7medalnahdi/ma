@@ -190,7 +190,7 @@
         const myRole = data.assignedRoles.find(p => p.name === playerName);
         if (myRole) {
           document.getElementById("roleImage").src = getRoleImage(myRole.role);
-          document.getElementById("roleName").innerText = myRole.role;
+          document.getElementById("roleName").innerText = ""; // Remove role name initially
           showCountdown();
         }
       });
@@ -228,7 +228,8 @@
     function updateRole() {
       // Show the new card after distribution
       document.getElementById("roleImage").style.display = "block";
-      document.getElementById("roleName").innerText = `دورك: ${document.getElementById("roleName").innerText}`;
+      const roleName = document.getElementById("roleName");
+      roleName.innerText = "دورك: " + roleName.innerText;
       document.getElementById("redistributeButton").style.display = "none";
     }
 
