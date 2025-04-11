@@ -81,6 +81,12 @@
       border-radius: 10px;
       cursor: pointer;
     }
+    .waiting-message {
+      font-size: 24px;
+      color: #ffc107;
+      font-weight: bold;
+      margin-top: 20px;
+    }
     @keyframes cardEntry {
       0% { transform: scale(0.8); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
@@ -107,6 +113,9 @@
     </div>
     <div id="countdownBox" style="display:none">
       <p class="countdown" id="countdownLabel">⏳ 3</p>
+    </div>
+    <div class="waiting-message" id="waitingMessage" style="display:none">
+      ننتظر الحكم ليبدأ المباراة...
     </div>
     <button class="redistribute" id="redistributeButton" onclick="redistributeRoles()">إعادة توزيع الأدوار</button>
   </div>
@@ -203,6 +212,7 @@
       const countdownLabel = document.getElementById("countdownLabel");
 
       countdownBox.style.display = "block";
+      document.getElementById("waitingMessage").style.display = "none";
       const interval = setInterval(() => {
         countdownLabel.innerText = `⏳ ${countdown}`;
         if (countdown === 0) {
@@ -231,6 +241,7 @@
       // Hide current card and show countdown
       document.getElementById("roleImage").style.display = "none";
       document.getElementById("countdownBox").style.display = "block";
+      document.getElementById("waitingMessage").style.display = "none";
     }
   </script>
 </body>
