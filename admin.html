@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة التحكم</title>
+  <title>إدارة جلسة المافيا</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -20,10 +20,15 @@
       background-color: #2e2e2e;
       border-radius: 15px;
     }
-    ul {
-      padding: 0;
-      list-style: none;
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
     }
+    input[type=number] { width: 60px; text-align: center; }
+    ul { list-style: none; padding: 0; }
     li {
       background-color: #444;
       margin: 5px 0;
@@ -32,42 +37,41 @@
       display: flex;
       justify-content: space-between;
     }
-    button, input[type=number] {
-      padding: 10px;
-      margin: 10px 5px;
-      border-radius: 10px;
-      border: none;
-      font-weight: bold;
-    }
     button { background-color: #d32f2f; color: white; cursor: pointer; }
-    .small-input { width: 60px; text-align: center; }
+    .code-box {
+      margin-top: 15px;
+      font-size: 20px;
+      color: #ffc107;
+    }
   </style>
 </head>
 <body>
   <div class="box">
-    <h1>📋 لوحة المدير</h1>
+    <h2>إدارة جلسة المافيا</h2>
+
+    <label>عدد اللاعبين: <input type="number" id="players" value="6"></label>
     <div>
-      <h3>عدد الأدوار:</h3>
-      👨‍🌾 مواطن <input type="number" id="citizen" class="small-input" value="2">
-      🧓 شايب <input type="number" id="oldman" class="small-input" value="1">
-      🕵️‍♂️ مافيا <input type="number" id="mafia" class="small-input" value="2">
-      🩺 دكتور <input type="number" id="doctor" class="small-input" value="1">
-      <button onclick="saveRoles()">💾 حفظ الأدوار</button>
+      👨‍🌾 مواطن <input type="number" id="citizen" value="2">
+      🧓 شايب <input type="number" id="oldman" value="1">
+      🕵️‍♂️ مافيا <input type="number" id="mafia" value="2">
+      🩺 دكتور <input type="number" id="doctor" value="1">
     </div>
+    <button onclick="createSession()">🚀 إنشاء الجلسة</button>
+    <div class="code-box" id="sessionCodeBox"></div>
 
     <h3>اللاعبين:</h3>
     <ul id="playersList"></ul>
 
-    <button onclick="startGame()">🚀 بدء اللعبة</button>
+    <button onclick="startGame()">🎲 بدء اللعبة</button>
     <button onclick="endRound()">✅ إنهاء الجولة</button>
     <button onclick="redistribute()">🔁 إعادة التوزيع</button>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, onValue, update, get, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-    const firebaseConfig = {
+    const app = initializeApp({
       apiKey: "AIzaSyBP2GPMVxCl2t3n3SFYqWDn585rftcBvGY",
       authDomain: "mifianew.firebaseapp.com",
       databaseURL: "https://mifianew-default-rtdb.firebaseio.com",
@@ -75,88 +79,88 @@
       storageBucket: "mifianew.firebasestorage.app",
       messagingSenderId: "90140522196",
       appId: "1:90140522196:web:64613821aa48b8db866d41"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const sessionId = prompt("أدخل كود الجلسة:");
-    const sessionRef = ref(db, `sessions/${sessionId}`);
-
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    onValue(sessionRef, (snap) => {
-      const data = snap.val();
-      const list = document.getElementById("playersList");
-      list.innerHTML = "";
-      data.playersList?.forEach(player => {
-        const li = document.createElement("li");
-        li.innerHTML = `${player.name} <button onclick="removePlayer('${player.name}')">❌</button>`;
-        list.appendChild(li);
-      });
     });
 
-    window.removePlayer = async (name) => {
-      const snap = await get(sessionRef);
-      const players = snap.val().playersList.filter(p => p.name !== name);
-      await update(sessionRef, { playersList: players });
-    };
+    const db = getDatabase(app);
+    let sessionId = "";
+    const playersList = document.getElementById("playersList");
 
-    window.saveRoles = async () => {
+    function generateCode() {
+      return Math.floor(1000 + Math.random() * 9000).toString();
+    }
+
+    window.createSession = async () => {
+      sessionId = generateCode();
+      const players = parseInt(document.getElementById("players").value);
       const roles = {
         citizen: +document.getElementById("citizen").value,
         oldman: +document.getElementById("oldman").value,
         mafia: +document.getElementById("mafia").value,
         doctor: +document.getElementById("doctor").value,
       };
-      await update(sessionRef, { roles });
-      alert("تم حفظ الأدوار بنجاح");
+      await set(ref(db, `sessions/${sessionId}`), {
+        players,
+        roles,
+        playersList: [],
+        started: false,
+        points: {}
+      });
+      document.getElementById("sessionCodeBox").innerText = `🔢 كود الجلسة: ${sessionId}`;
+      onValue(ref(db, `sessions/${sessionId}`), (snap) => {
+        const data = snap.val();
+        playersList.innerHTML = "";
+        data.playersList?.forEach(p => {
+          const li = document.createElement("li");
+          li.innerHTML = `${p.name} <button onclick=\"removePlayer('${p.name}')\">❌</button>`;
+          playersList.appendChild(li);
+        });
+      });
+    };
+
+    window.removePlayer = async (name) => {
+      const snap = await get(ref(db, `sessions/${sessionId}`));
+      const players = snap.val().playersList.filter(p => p.name !== name);
+      await update(ref(db, `sessions/${sessionId}`), { playersList: players });
     };
 
     window.startGame = async () => {
-      const snap = await get(sessionRef);
-      const { playersList, roles } = snap.val();
-      const rolePool = [
-        ...Array(roles.citizen).fill("مواطن"),
-        ...Array(roles.oldman).fill("شايب"),
-        ...Array(roles.mafia).fill("مافيا"),
-        ...Array(roles.doctor).fill("دكتور")
+      const snap = await get(ref(db, `sessions/${sessionId}`));
+      const data = snap.val();
+      const pool = [
+        ...Array(data.roles.citizen).fill("مواطن"),
+        ...Array(data.roles.oldman).fill("شايب"),
+        ...Array(data.roles.mafia).fill("مافيا"),
+        ...Array(data.roles.doctor).fill("دكتور")
       ];
-      const assignedRoles = playersList.map((p, i) => ({ name: p.name, role: shuffle(rolePool)[i] || "مواطن" }));
-      await update(sessionRef, { started: true, assignedRoles });
+      const shuffled = pool.sort(() => Math.random() - 0.5);
+      const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
+      await update(ref(db, `sessions/${sessionId}`), { started: true, assignedRoles: assigned });
     };
 
     window.endRound = async () => {
-      const winners = prompt("أدخل أسماء اللاعبين الفائزين مفصولة بفاصلة: ,");
-      const snap = await get(sessionRef);
-      const players = snap.val().playersList.map(p => {
-        if (winners.includes(p.name)) {
-          p.points = (p.points || 0) + 100;
-        }
+      const winners = prompt("اكتب أسماء الفائزين مفصولة بفاصلة ,");
+      const snap = await get(ref(db, `sessions/${sessionId}`));
+      const list = snap.val().playersList.map(p => {
+        if (winners.includes(p.name)) p.points = (p.points || 0) + 100;
         return p;
       });
-      await update(sessionRef, { playersList: players });
-      alert("تم توزيع النقاط بنجاح!");
+      await update(ref(db, `sessions/${sessionId}`), { playersList: list });
+      alert("تم منح النقاط بنجاح");
     };
 
     window.redistribute = async () => {
-      const snap = await get(sessionRef);
-      const { playersList, roles } = snap.val();
-      const rolePool = [
-        ...Array(roles.citizen).fill("مواطن"),
-        ...Array(roles.oldman).fill("شايب"),
-        ...Array(roles.mafia).fill("مافيا"),
-        ...Array(roles.doctor).fill("دكتور")
+      const snap = await get(ref(db, `sessions/${sessionId}`));
+      const data = snap.val();
+      const pool = [
+        ...Array(data.roles.citizen).fill("مواطن"),
+        ...Array(data.roles.oldman).fill("شايب"),
+        ...Array(data.roles.mafia).fill("مافيا"),
+        ...Array(data.roles.doctor).fill("دكتور")
       ];
-      const assignedRoles = playersList.map((p, i) => ({ name: p.name, role: shuffle(rolePool)[i] || "مواطن" }));
-      await update(sessionRef, { assignedRoles });
-      alert("تم إعادة توزيع الأدوار بنجاح!");
+      const shuffled = pool.sort(() => Math.random() - 0.5);
+      const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
+      await update(ref(db, `sessions/${sessionId}`), { assignedRoles: assigned });
+      alert("تم إعادة توزيع الأدوار");
     };
   </script>
 </body>

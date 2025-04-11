@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>انضمام وعرض الدور</title>
+  <title>الانضمام للجلسة</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Tajawal', sans-serif;
-      background-color: #121212;
+      background-color: #1c1c1c;
       color: white;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      flex-direction: column;
       min-height: 100vh;
       margin: 0;
       text-align: center;
     }
-    .container {
-      background-color: #1e1e1e;
+    .box {
+      background-color: #2e2e2e;
       padding: 30px;
       border-radius: 20px;
       width: 90%;
@@ -33,32 +33,103 @@
       border: none;
       font-size: 16px;
     }
-    input {
-      background-color: white;
-      color: black;
-    }
+    input { background: white; color: black; }
     button {
       background-color: #d32f2f;
       color: white;
       font-weight: bold;
       cursor: pointer;
     }
-    .role-card {
+    .card {
       margin-top: 20px;
-      padding: 20px;
-      border-radius: 15px;
-      background: #222;
+      background-color: #222;
       border: 2px solid #ffc107;
+      border-radius: 12px;
+      padding: 20px;
       box-shadow: 0 0 20px #ffc10766;
     }
-    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <div class="container" id="joinBox">
-    <h2>🎮 انضم إلى اللعبة</h2>
+  <div class="box" id="joinBox">
+    <h2>🎮 دخول إلى جلسة</h2>
     <input id="code" placeholder="كود الجلسة">
     <input id="name" placeholder="اسم اللاعب">
     <button onclick="joinGame()">انضمام</button>
     <div id="status"></div>
   </div>
+
+  <div class="box" id="roleBox" style="display:none">
+    <h2>🎭 دورك:</h2>
+    <div class="card">
+      <h1 id="roleName">⏳ جاري الانتظار...</h1>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyBP2GPMVxCl2t3n3SFYqWDn585rftcBvGY",
+      authDomain: "mifianew.firebaseapp.com",
+      databaseURL: "https://mifianew-default-rtdb.firebaseio.com",
+      projectId: "mifianew",
+      storageBucket: "mifianew.firebasestorage.app",
+      messagingSenderId: "90140522196",
+      appId: "1:90140522196:web:64613821aa48b8db866d41"
+    });
+
+    const db = getDatabase(app);
+    let sessionCode = "";
+    let playerName = "";
+
+    window.joinGame = async () => {
+      sessionCode = document.getElementById("code").value.trim();
+      playerName = document.getElementById("name").value.trim();
+      const status = document.getElementById("status");
+
+      if (!sessionCode || !playerName) {
+        status.innerText = "يرجى تعبئة جميع الحقول";
+        return;
+      }
+
+      const refPath = ref(db, `sessions/${sessionCode}`);
+      const snap = await get(refPath);
+      if (!snap.exists()) {
+        status.innerText = "الجلسة غير موجودة";
+        return;
+      }
+
+      const data = snap.val();
+      const players = data.playersList || [];
+      if (players.find(p => p.name === playerName)) {
+        status.innerText = "الاسم مستخدم بالفعل";
+        return;
+      }
+
+      players.push({ name: playerName });
+      await update(refPath, { playersList: players });
+
+      document.getElementById("joinBox").style.display = "none";
+      document.getElementById("roleBox").style.display = "block";
+      listenForRole(refPath);
+    };
+
+    function listenForRole(refPath) {
+      onValue(refPath, (snap) => {
+        const data = snap.val();
+        if (!data.started || !data.assignedRoles) return;
+
+        const me = data.assignedRoles.find(p => p.name === playerName);
+        if (me) {
+          document.getElementById("roleName").innerText = "🔄 جاري تحميل الدور...";
+          setTimeout(() => {
+            document.getElementById("roleName").innerText = me.role;
+          }, 3000);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

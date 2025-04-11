@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إنشاء جلسة جديدة</title>
+  <title>مافيا - البداية</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -21,114 +21,33 @@
       background-color: #2e2e2e;
       padding: 30px;
       border-radius: 16px;
-      max-width: 500px;
+      max-width: 400px;
       width: 90%;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
       text-align: center;
     }
-    h1 { margin-bottom: 20px; }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-      margin: 10px 0;
-    }
-    input[type=number] {
-      background: white;
-      color: black;
+    h1 {
+      margin-bottom: 30px;
     }
     button {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: none;
+      font-size: 18px;
+      margin: 10px 0;
       background-color: #d32f2f;
       color: white;
       font-weight: bold;
       cursor: pointer;
     }
-    .role-group {
-      display: flex;
-      justify-content: space-between;
-      margin: 10px 0;
-    }
-    .code-box {
-      font-size: 22px;
-      font-weight: bold;
-      color: #ffc107;
-      margin-top: 15px;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🎯 إنشاء جلسة مافيا</h1>
-    <label>عدد اللاعبين:</label>
-    <input type="number" id="players" min="4" max="20" value="6">
-
-    <div class="role-group">
-      👨‍🌾 <label>مواطن</label><input type="number" id="citizen" value="2">
-    </div>
-    <div class="role-group">
-      🧓 <label>شايب</label><input type="number" id="oldman" value="1">
-    </div>
-    <div class="role-group">
-      🕵️‍♂️ <label>مافيا</label><input type="number" id="mafia" value="2">
-    </div>
-    <div class="role-group">
-      🩺 <label>دكتور</label><input type="number" id="doctor" value="1">
-    </div>
-
-    <button onclick="createSession()">🚀 إنشاء الجلسة</button>
-    <div class="code-box" id="sessionCodeBox"></div>
-    <p style="font-size: 14px; color: #aaa;">شارك هذا الكود مع اللاعبين للانضمام</p>
+    <h1>🎭 لعبة المافيا</h1>
+    <button onclick="location.href='admin.html'">🚀 إنشاء جلسة (مدير)</button>
+    <button onclick="location.href='game.html'">🎮 دخول جلسة (لاعب)</button>
   </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBP2GPMVxCl2t3n3SFYqWDn585rftcBvGY",
-      authDomain: "mifianew.firebaseapp.com",
-      databaseURL: "https://mifianew-default-rtdb.firebaseio.com",
-      projectId: "mifianew",
-      storageBucket: "mifianew.firebasestorage.app",
-      messagingSenderId: "90140522196",
-      appId: "1:90140522196:web:64613821aa48b8db866d41"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    function generateCode() {
-      return Math.floor(1000 + Math.random() * 9000).toString();
-    }
-
-    window.createSession = () => {
-      const players = parseInt(document.getElementById("players").value);
-      const roles = {
-        citizen: +document.getElementById("citizen").value,
-        oldman: +document.getElementById("oldman").value,
-        mafia: +document.getElementById("mafia").value,
-        doctor: +document.getElementById("doctor").value,
-      };
-      const totalRoles = roles.citizen + roles.oldman + roles.mafia + roles.doctor;
-
-      if (totalRoles !== players) {
-        alert("❌ عدد الأدوار لا يساوي عدد اللاعبين!");
-        return;
-      }
-
-      const code = generateCode();
-      set(ref(db, `sessions/${code}`), {
-        players,
-        roles,
-        playersList: [],
-        started: false,
-        points: {}
-      }).then(() => {
-        document.getElementById("sessionCodeBox").innerText = `🔢 كود الجلسة: ${code}`;
-      });
-    }
-  </script>
 </body>
 </html>
