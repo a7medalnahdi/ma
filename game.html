@@ -52,12 +52,13 @@
       display: inline-block;
       margin: 10px;
       text-align: center;
-      width: 160px;
+      width: 280px;
     }
     .role-card img {
-      width: 160px;
-      height: 160px;
+      width: 280px;
+      height: 224px;
       border-radius: 10px;
+      animation: cardEntry 0.5s ease-out;
     }
     .points {
       font-weight: bold;
@@ -68,6 +69,10 @@
       font-size: 24px;
       margin-top: 20px;
       color: #ff5722;
+    }
+    @keyframes cardEntry {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
@@ -191,9 +196,21 @@
         if (countdown === 0) {
           clearInterval(interval);
           countdownBox.style.display = "none";
+          updateRole();
         }
         countdown--;
       }, 1000);
+    }
+
+    function updateRole() {
+      // Hide current card
+      document.getElementById("roleImage").style.display = "none";
+      document.getElementById("roleName").innerText = "⏳ جاري التوزيع...";
+
+      // Show the new card after distribution
+      setTimeout(() => {
+        document.getElementById("roleImage").style.display = "block";
+      }, 3000);
     }
   </script>
 </body>
