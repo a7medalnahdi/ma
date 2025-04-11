@@ -36,12 +36,25 @@
       border-radius: 10px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
-    button { background-color: #d32f2f; color: white; cursor: pointer; }
+    button {
+      background-color: #d32f2f;
+      color: white;
+      cursor: pointer;
+    }
     .code-box {
       margin-top: 15px;
       font-size: 20px;
       color: #ffc107;
+    }
+    .remove-btn {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -63,7 +76,7 @@
     <ul id="playersList"></ul>
 
     <button onclick="startGame()">🎲 بدء اللعبة</button>
-    <button onclick="endRound()">✅ إنهاء الجولة</button>
+    <button onclick="showWinnersList()">✅ توزيع النقاط</button>
     <button onclick="redistribute()">🔁 إعادة التوزيع</button>
   </div>
 
@@ -83,6 +96,7 @@
 
     const db = getDatabase(app);
     let sessionId = "";
+    let assignedRoles = [];
     const playersList = document.getElementById("playersList");
 
     function generateCode() {
@@ -106,25 +120,34 @@
         points: {}
       });
       document.getElementById("sessionCodeBox").innerText = `🔢 كود الجلسة: ${sessionId}`;
-      onValue(ref(db, `sessions/${sessionId}`), (snap) => {
+      const sessionRef = ref(db, `sessions/${sessionId}`);
+      onValue(sessionRef, (snap) => {
         const data = snap.val();
+        assignedRoles = data.assignedRoles || [];
         playersList.innerHTML = "";
         data.playersList?.forEach(p => {
+          const role = assignedRoles.find(r => r.name === p.name)?.role || "—";
           const li = document.createElement("li");
-          li.innerHTML = `${p.name} <button onclick=\"removePlayer('${p.name}')\">❌</button>`;
+          li.innerHTML = `
+            <label><input type='checkbox' class='winner' value='${p.name}'> ${p.name} - <strong>${role}</strong></label>
+            <button class='remove-btn' onclick=\"removePlayer('${p.name}')\">❌</button>
+          `;
           playersList.appendChild(li);
         });
       });
     };
 
     window.removePlayer = async (name) => {
-      const snap = await get(ref(db, `sessions/${sessionId}`));
+      const sessionRef = ref(db, `sessions/${sessionId}`);
+      const snap = await get(sessionRef);
       const players = snap.val().playersList.filter(p => p.name !== name);
-      await update(ref(db, `sessions/${sessionId}`), { playersList: players });
+      await update(sessionRef, { playersList: players });
+      alert(`${name} تم حذفه من الجلسة`);
     };
 
     window.startGame = async () => {
-      const snap = await get(ref(db, `sessions/${sessionId}`));
+      const sessionRef = ref(db, `sessions/${sessionId}`);
+      const snap = await get(sessionRef);
       const data = snap.val();
       const pool = [
         ...Array(data.roles.citizen).fill("مواطن"),
@@ -134,22 +157,29 @@
       ];
       const shuffled = pool.sort(() => Math.random() - 0.5);
       const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
-      await update(ref(db, `sessions/${sessionId}`), { started: true, assignedRoles: assigned });
+      await update(sessionRef, { started: true, assignedRoles: assigned });
     };
 
-    window.endRound = async () => {
-      const winners = prompt("اكتب أسماء الفائزين مفصولة بفاصلة ,");
-      const snap = await get(ref(db, `sessions/${sessionId}`));
+    window.showWinnersList = () => {
+      const checkboxes = document.querySelectorAll('.winner');
+      const winners = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+      givePoints(winners);
+    };
+
+    async function givePoints(winners) {
+      const sessionRef = ref(db, `sessions/${sessionId}`);
+      const snap = await get(sessionRef);
       const list = snap.val().playersList.map(p => {
         if (winners.includes(p.name)) p.points = (p.points || 0) + 100;
         return p;
       });
-      await update(ref(db, `sessions/${sessionId}`), { playersList: list });
-      alert("تم منح النقاط بنجاح");
-    };
+      await update(sessionRef, { playersList: list });
+      alert("تم منح النقاط بنجاح!");
+    }
 
     window.redistribute = async () => {
-      const snap = await get(ref(db, `sessions/${sessionId}`));
+      const sessionRef = ref(db, `sessions/${sessionId}`);
+      const snap = await get(sessionRef);
       const data = snap.val();
       const pool = [
         ...Array(data.roles.citizen).fill("مواطن"),
@@ -159,7 +189,7 @@
       ];
       const shuffled = pool.sort(() => Math.random() - 0.5);
       const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
-      await update(ref(db, `sessions/${sessionId}`), { assignedRoles: assigned });
+      await update(sessionRef, { assignedRoles: assigned });
       alert("تم إعادة توزيع الأدوار");
     };
   </script>
