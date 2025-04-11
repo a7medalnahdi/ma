@@ -72,6 +72,15 @@
       color: #ff5722;
       font-weight: bold;
     }
+    .redistribute {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: #ff5722;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
     @keyframes cardEntry {
       0% { transform: scale(0.8); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
@@ -99,6 +108,7 @@
     <div id="countdownBox" style="display:none">
       <p class="countdown" id="countdownLabel">⏳ 3</p>
     </div>
+    <button class="redistribute" id="redistributeButton" onclick="redistributeRoles()">إعادة توزيع الأدوار</button>
   </div>
 
   <script type="module">
@@ -212,7 +222,15 @@
       // Show the new card after distribution
       setTimeout(() => {
         document.getElementById("roleImage").style.display = "block";
+        document.getElementById("redistributeButton").style.display = "none";
+        document.getElementById("roleName").innerText = "دورك: " + document.getElementById("roleName").innerText;
       }, 3000);
+    }
+
+    function redistributeRoles() {
+      // Hide current card and show countdown
+      document.getElementById("roleImage").style.display = "none";
+      document.getElementById("countdownBox").style.display = "block";
     }
   </script>
 </body>
