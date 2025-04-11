@@ -129,7 +129,7 @@
           const role = assignedRoles.find(r => r.name === p.name)?.role || "—";
           const li = document.createElement("li");
           li.innerHTML = `
-            <label><input type='checkbox' class='winner' value='${p.name}'> ${p.name} - <strong>${role}</strong></label>
+            <label><input type='checkbox' class='winner' value='${p.name}'> ${p.name} - <strong>${role}</strong> - 🏅 ${p.points || 0} نقطة</label>
             <button class='remove-btn' onclick=\"removePlayer('${p.name}')\">❌</button>
           `;
           playersList.appendChild(li);
