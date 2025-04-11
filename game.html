@@ -48,6 +48,22 @@
       padding: 20px;
       box-shadow: 0 0 20px #ffc10766;
     }
+    .role-card {
+      display: inline-block;
+      margin: 10px;
+      text-align: center;
+      width: 100px;
+    }
+    .role-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+    }
+    .points {
+      font-weight: bold;
+      margin-top: 10px;
+      color: #ffc107;
+    }
   </style>
 </head>
 <body>
@@ -61,8 +77,12 @@
 
   <div class="box" id="roleBox" style="display:none">
     <h2>🎭 دورك:</h2>
-    <div class="card">
-      <h1 id="roleName">⏳ جاري الانتظار...</h1>
+    <p id="pointsLabel">نقاطك: --</p>
+    <div id="roleCardsContainer">
+      <div class="role-card" id="roleCard">
+        <img id="roleImage" src="" alt="دور اللاعب" />
+        <p id="roleName">⏳ جاري الانتظار...</p>
+      </div>
     </div>
   </div>
 
@@ -113,27 +133,42 @@
 
       document.getElementById("joinBox").style.display = "none";
       document.getElementById("roleBox").style.display = "block";
-      listenForRole(refPath);
+      listenForUpdates(refPath);
     };
 
-    function listenForRole(refPath) {
+    function listenForUpdates(refPath) {
       onValue(refPath, (snap) => {
         const data = snap.val();
+
         const stillInGame = data.playersList?.some(p => p.name === playerName);
         if (!stillInGame) {
           alert("❌ تم حذفك من الجلسة من قبل المدير، حاول الانضمام من جديد");
           location.reload();
         }
 
-        if (!data.started || !data.assignedRoles) return;
-        const me = data.assignedRoles.find(p => p.name === playerName);
+        const me = data.playersList?.find(p => p.name === playerName);
         if (me) {
-          document.getElementById("roleName").innerText = "🔄 جاري تحميل الدور...";
-          setTimeout(() => {
-            document.getElementById("roleName").innerText = me.role;
-          }, 3000);
+          document.getElementById("pointsLabel").innerText = `نقاطك: ${me.points || 0}`;
+        }
+
+        if (!data.started || !data.assignedRoles) return;
+
+        const myRole = data.assignedRoles.find(p => p.name === playerName);
+        if (myRole) {
+          document.getElementById("roleImage").src = getRoleImage(myRole.role);
+          document.getElementById("roleName").innerText = myRole.role;
         }
       });
+    }
+
+    function getRoleImage(role) {
+      switch (role) {
+        case "مواطن": return "/mnt/data/مواطن@2x.png";
+        case "شايب": return "/mnt/data/شايب@2x.png";
+        case "مافيا": return "/mnt/data/مافيا@2x.png";
+        case "دكتور": return "/mnt/data/دكتور@2x.png";
+        default: return "/mnt/data/مواطن@2x.png";
+      }
     }
   </script>
 </body>
