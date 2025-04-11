@@ -213,6 +213,7 @@
 
       countdownBox.style.display = "block";
       document.getElementById("waitingMessage").style.display = "none";
+      document.getElementById("roleImage").style.display = "none";
       const interval = setInterval(() => {
         countdownLabel.innerText = `⏳ ${countdown}`;
         if (countdown === 0) {
@@ -225,16 +226,10 @@
     }
 
     function updateRole() {
-      // Hide current card
-      document.getElementById("roleImage").style.display = "none";
-      document.getElementById("roleName").innerText = "⏳ جاري التوزيع...";
-
       // Show the new card after distribution
-      setTimeout(() => {
-        document.getElementById("roleImage").style.display = "block";
-        document.getElementById("redistributeButton").style.display = "none";
-        document.getElementById("roleName").innerText = "دورك: " + document.getElementById("roleName").innerText;
-      }, 3000);
+      document.getElementById("roleImage").style.display = "block";
+      document.getElementById("roleName").innerText = `دورك: ${document.getElementById("roleName").innerText}`;
+      document.getElementById("redistributeButton").style.display = "none";
     }
 
     function redistributeRoles() {
