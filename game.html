@@ -119,8 +119,13 @@
     function listenForRole(refPath) {
       onValue(refPath, (snap) => {
         const data = snap.val();
-        if (!data.started || !data.assignedRoles) return;
+        const stillInGame = data.playersList?.some(p => p.name === playerName);
+        if (!stillInGame) {
+          alert("❌ تم حذفك من الجلسة من قبل المدير، حاول الانضمام من جديد");
+          location.reload();
+        }
 
+        if (!data.started || !data.assignedRoles) return;
         const me = data.assignedRoles.find(p => p.name === playerName);
         if (me) {
           document.getElementById("roleName").innerText = "🔄 جاري تحميل الدور...";
