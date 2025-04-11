@@ -1,47 +1,42 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إنشاء جلسة مافيا</title>
+  <title>إنشاء جلسة جديدة</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Tajawal', sans-serif;
-      background-color: #2e2e2e;
+      background-color: #1c1c1c;
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       min-height: 100vh;
       margin: 0;
-      flex-direction: column;
-    }
-    .logo {
-      margin-bottom: 20px;
-    }
-    .logo img {
-      height: 80px;
     }
     .container {
-      background: rgba(0, 0, 0, 0.8);
+      background-color: #2e2e2e;
       padding: 30px;
-      border-radius: 20px;
+      border-radius: 16px;
+      max-width: 500px;
       width: 90%;
-      max-width: 600px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
       text-align: center;
     }
+    h1 { margin-bottom: 20px; }
     input, button {
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
       border-radius: 10px;
       border: none;
       font-size: 16px;
+      margin: 10px 0;
     }
-    input {
-      background-color: white;
+    input[type=number] {
+      background: white;
       color: black;
     }
     button {
@@ -49,41 +44,42 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
     }
-    button:hover {
-      background-color: #b71c1c;
-    }
-    .role-input {
+    .role-group {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      margin: 10px 0;
     }
-    .role-input input {
-      width: 70px;
-    }
-    a {
-      color: #ff5252;
-      text-decoration: none;
+    .code-box {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffc107;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
-  <div class="logo">
-    <img src="https://i.imgur.com/dMAFz65.png" alt="شعار اللعبة">
-  </div>
   <div class="container">
-    <h1>🎭 إنشاء جلسة لعبة مافيا</h1>
+    <h1>🎯 إنشاء جلسة مافيا</h1>
     <label>عدد اللاعبين:</label>
-    <input type="number" id="players" min="4" max="20" value="6"/>
+    <input type="number" id="players" min="4" max="20" value="6">
 
-    <div class="role-input"><label>👨‍🌾 مواطن</label><input type="number" id="citizen" value="2"></div>
-    <div class="role-input"><label>🧓 شايب</label><input type="number" id="oldman" value="1"></div>
-    <div class="role-input"><label>🕵️‍♂️ مافيا</label><input type="number" id="mafia" value="2"></div>
-    <div class="role-input"><label>🩺 دكتور</label><input type="number" id="doctor" value="1"></div>
+    <div class="role-group">
+      👨‍🌾 <label>مواطن</label><input type="number" id="citizen" value="2">
+    </div>
+    <div class="role-group">
+      🧓 <label>شايب</label><input type="number" id="oldman" value="1">
+    </div>
+    <div class="role-group">
+      🕵️‍♂️ <label>مافيا</label><input type="number" id="mafia" value="2">
+    </div>
+    <div class="role-group">
+      🩺 <label>دكتور</label><input type="number" id="doctor" value="1">
+    </div>
 
     <button onclick="createSession()">🚀 إنشاء الجلسة</button>
-    <div id="sessionLink"></div>
+    <div class="code-box" id="sessionCodeBox"></div>
+    <p style="font-size: 14px; color: #aaa;">شارك هذا الكود مع اللاعبين للانضمام</p>
   </div>
 
   <script type="module">
@@ -97,39 +93,40 @@
       projectId: "mifianew",
       storageBucket: "mifianew.firebasestorage.app",
       messagingSenderId: "90140522196",
-      appId: "1:90140522196:web:64613821aa48b8db866d41",
-      measurementId: "G-B2XWYD9T7M"
+      appId: "1:90140522196:web:64613821aa48b8db866d41"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    function generateCode() {
+      return Math.floor(1000 + Math.random() * 9000).toString();
+    }
+
     window.createSession = () => {
       const players = parseInt(document.getElementById("players").value);
       const roles = {
-        citizen: parseInt(document.getElementById("citizen").value),
-        oldman: parseInt(document.getElementById("oldman").value),
-        mafia: parseInt(document.getElementById("mafia").value),
-        doctor: parseInt(document.getElementById("doctor").value)
+        citizen: +document.getElementById("citizen").value,
+        oldman: +document.getElementById("oldman").value,
+        mafia: +document.getElementById("mafia").value,
+        doctor: +document.getElementById("doctor").value,
       };
       const totalRoles = roles.citizen + roles.oldman + roles.mafia + roles.doctor;
 
       if (totalRoles !== players) {
-        alert("عدد الأدوار يجب أن يساوي عدد اللاعبين!");
+        alert("❌ عدد الأدوار لا يساوي عدد اللاعبين!");
         return;
       }
 
-      const sessionId = Math.random().toString(36).substring(2, 8);
-      set(ref(db, 'sessions/' + sessionId), {
+      const code = generateCode();
+      set(ref(db, `sessions/${code}`), {
         players,
         roles,
         playersList: [],
-        started: false
+        started: false,
+        points: {}
       }).then(() => {
-        document.getElementById("sessionLink").innerHTML = `
-          <p>🔗 رابط اللاعب:</p><a href='join.html?session=${sessionId}' target='_blank'>join.html?session=${sessionId}</a><br><br>
-          <p>🧑‍💼 رابط المدير:</p><a href='admin.html?session=${sessionId}' target='_blank'>admin.html?session=${sessionId}</a>
-        `;
+        document.getElementById("sessionCodeBox").innerText = `🔢 كود الجلسة: ${code}`;
       });
     }
   </script>
