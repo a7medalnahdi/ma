@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الانضمام للجلسة</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <title>إدارة جلسة المافيا</title>
   <style>
     body {
       font-family: 'Tajawal', sans-serif;
@@ -40,13 +39,43 @@
       font-weight: bold;
       cursor: pointer;
     }
-    .card {
+    .role-card {
+      display: inline-block;
+      margin: 10px;
+      text-align: center;
+      width: 280px;
+    }
+    .role-card img {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      border-radius: 10px;
+      animation: cardEntry 0.5s ease-out;
+    }
+    .countdown {
+      font-size: 40px;
       margin-top: 20px;
-      background-color: #222;
-      border: 2px solid #ffc107;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 0 20px #ffc10766;
+      color: #ff5722;
+      font-weight: bold;
+    }
+    .redistribute {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: #ff5722;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .waiting-message {
+      font-size: 24px;
+      color: #ffc107;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    @keyframes cardEntry {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
@@ -62,9 +91,19 @@
   <div class="box" id="roleBox" style="display:none">
     <h2>🎭 دورك:</h2>
     <p id="pointsLabel">نقاطك: --</p>
-    <div class="card">
-      <h1 id="roleName">⏳ جاري الانتظار...</h1>
+    <div id="roleCardsContainer">
+      <div class="role-card" id="roleCard">
+        <img id="roleImage" src="" alt="دور اللاعب" />
+        <p id="roleName"></p>
+      </div>
     </div>
+    <div id="countdownBox" style="display:none">
+      <p class="countdown" id="countdownLabel">⏳ 3</p>
+    </div>
+    <div class="waiting-message" id="waitingMessage" style="display:none">
+      ننتظر الحكم ليبدأ المباراة...
+    </div>
+    <button class="redistribute" id="redistributeButton" onclick="redistributeRoles()" style="display:none;">إعادة توزيع الأدوار</button>
   </div>
 
   <script type="module">
@@ -136,12 +175,53 @@
 
         const myRole = data.assignedRoles.find(p => p.name === playerName);
         if (myRole) {
-          document.getElementById("roleName").innerText = "🔄 جاري تحميل الدور...";
-          setTimeout(() => {
-            document.getElementById("roleName").innerText = myRole.role;
-          }, 3000);
+          document.getElementById("roleImage").src = getRoleImage(myRole.role);
+          document.getElementById("roleName").innerText = ""; // Remove role name initially
+          showCountdown();
         }
       });
+    }
+
+    function getRoleImage(role) {
+      switch (role) {
+        case "مواطن": return "https://i.ibb.co/Z6FMRxqY/2x.png";
+        case "شايب": return "https://i.ibb.co/0y3SJF59/2x.png";
+        case "مافيا": return "https://i.ibb.co/Xr5DspH8/2x.png";
+        case "دكتور": return "https://i.ibb.co/KpkctgTs/2x.png";
+        default: return "https://i.ibb.co/Z6FMRxqY/2x.png";
+      }
+    }
+
+    function showCountdown() {
+      let countdown = 3;
+      const countdownBox = document.getElementById("countdownBox");
+      const countdownLabel = document.getElementById("countdownLabel");
+
+      countdownBox.style.display = "block";
+      document.getElementById("waitingMessage").style.display = "none";
+      document.getElementById("roleImage").style.display = "none";
+      const interval = setInterval(() => {
+        countdownLabel.innerText = `⏳ ${countdown}`;
+        if (countdown === 0) {
+          clearInterval(interval);
+          countdownBox.style.display = "none";
+          updateRole();
+        }
+        countdown--;
+      }, 1000);
+    }
+
+    function updateRole() {
+      document.getElementById("roleImage").style.display = "block";
+      const roleName = document.getElementById("roleName");
+      roleName.innerText = "دورك: " + roleName.innerText;
+      document.getElementById("redistributeButton").style.display = "none";
+    }
+
+    function redistributeRoles() {
+      document.getElementById("roleImage").style.display = "none";
+      document.getElementById("countdownBox").style.display = "block";
+      document.getElementById("waitingMessage").style.display = "none";
     }
   </script>
 </body>
