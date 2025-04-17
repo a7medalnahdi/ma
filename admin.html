@@ -582,14 +582,14 @@
         ...Array(data.roles.oldman).fill("شايب"),
         ...Array(data.roles.mafia).fill("مافيا"),
         ...Array(data.roles.doctor).fill("دكتور")
-      ];
+        ];
       const shuffled = pool.sort(() => Math.random() - 0.5);
       const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
-      await update(sessionRef, { assignedRoles: assigned, redistribution_id: Date.now() });
-      const msg = document.getElementById("redistribution-msg");
-      msg.style.display = "block";
-      setTimeout(() => { msg.style.display = "none"; }, 2000);
-    };
+      await update(sessionRef, { assignedRoles: assigned });
+      document.getElementById('redistribution-msg').style.display = 'block';
+      setTimeout(() => document.getElementById('redistribution-msg').style.display = 'none', 2500);
+    }
+
   </script>
 </body>
 </html>
