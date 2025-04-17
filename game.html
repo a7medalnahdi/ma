@@ -297,6 +297,67 @@
       margin-left: 10px;
     }
     
+    /* تنبيه تغيير الدور */
+    .role-change-alert {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    .role-change-content {
+      background: linear-gradient(135deg, #ff3e3e, #ff9966);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      max-width: 90%;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .role-change-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: white;
+    }
+    
+    .role-change-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+      animation: pulse 1s infinite alternate;
+    }
+    
+    .role-change-timer {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: white;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+    
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
@@ -313,6 +374,14 @@
       .code-input {
         letter-spacing: 4px;
         font-size: 20px;
+      }
+      
+      .role-change-title {
+        font-size: 20px;
+      }
+      
+      .role-change-icon {
+        font-size: 50px;
       }
     }
   </style>
@@ -357,6 +426,15 @@
     </div>
   </div>
 
+  <!-- تنبيه تغيير الدور -->
+  <div id="roleChangeAlert" style="display: none;" class="role-change-alert">
+    <div class="role-change-content">
+      <div class="role-change-icon">🔄</div>
+      <div class="role-change-title">تم تغيير دورك!</div>
+      <div class="role-change-timer">3</div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get, update, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
@@ -377,6 +455,8 @@
     window.db = db;
     window.currentSession = null;
     window.playerName = "";
+    window.currentRole = "";
+    window.lastRedistributionId = null;
     
     // Role information and icons
     const roleDetails = {
@@ -456,6 +536,7 @@
         // Set global variables
         window.currentSession = sessionCode;
         window.playerName = playerName;
+        window.lastRedistributionId = sessionData.redistribution_id || null;
         
         // Show success message
         showSuccess("تم الانضمام للجلسة بنجاح!");
@@ -512,11 +593,30 @@
         // Update players list
         updatePlayersList(data.playersList || []);
         
+        // Check if role redistribution occurred
+        if (window.lastRedistributionId !== null && data.redistribution_id !== window.lastRedistributionId) {
+          window.lastRedistributionId = data.redistribution_id;
+          
+          // Only show alert if we already had a role
+          if (window.currentRole) {
+            showRoleChangeAlert();
+          }
+        }
+        
         // Check if game has started and update role
         if (data.started && data.assignedRoles) {
           const myRole = data.assignedRoles.find(r => r.name === playerName);
           if (myRole) {
-            updatePlayerRole(myRole.role);
+            const newRole = myRole.role;
+            
+            // Check if role has changed
+            if (window.currentRole && window.currentRole !== newRole) {
+              showRoleChangeAlert();
+            }
+            
+            // Update current role
+            window.currentRole = newRole;
+            updatePlayerRole(newRole);
           }
         }
       });
@@ -557,6 +657,7 @@
       
       // Reset previous styling
       roleElement.style.borderColor = "#4a6bff";
+      document.getElementById("roleName").style.color = "#4caf50";
       
       // Apply role-specific styling
       if (role === "مافيا") {
@@ -568,6 +669,35 @@
       } else if (role === "شايب") {
         roleElement.style.borderColor = "#ff9800";
         document.getElementById("roleName").style.color = "#ff9800";
+      }
+    }
+    
+    // إظهار تنبيه تغيير الدور
+    function showRoleChangeAlert() {
+      const alertElement = document.getElementById("roleChangeAlert");
+      const timerElement = document.querySelector(".role-change-timer");
+      alertElement.style.display = "flex";
+      
+      // تشغيل مؤقت العد التنازلي
+      let countdown = 3;
+      timerElement.textContent = countdown;
+      
+      const interval = setInterval(() => {
+        countdown--;
+        timerElement.textContent = countdown;
+        
+        if (countdown <= 0) {
+          clearInterval(interval);
+          alertElement.style.display = "none";
+        }
+      }, 1000);
+      
+      // صوت التنبيه (إذا كان متاحًا)
+      try {
+        const audio = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAAwAAAQEAT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PAAAAAAA4T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+MYxAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxDsAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
+        audio.play();
+      } catch (e) {
+        console.log('الصوت غير متاح أو غير مدعوم');
       }
     }
   </script>
