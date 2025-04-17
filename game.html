@@ -584,43 +584,34 @@
     }
     
     function setupSessionListener(sessionId, playerName) {
-      const sessionRef = ref(db, `sessions/${sessionId}`);
-      
-      onValue(sessionRef, (snapshot) => {
-        const data = snapshot.val();
-        if (!data) return;
-        
-        // Update players list
-        updatePlayersList(data.playersList || []);
-        
-        // Check if role redistribution occurred
-        if (window.lastRedistributionId !== null && data.redistribution_id !== window.lastRedistributionId) {
-  window.lastRedistributionId = data.redistribution_id;
+  const sessionRef = ref(db, `sessions/${sessionId}`);
   
-  // Show alert whenever redistribution happens, regardless of role change
-  if (data.started) {
-    showRoleChangeAlert();
-  }
-}
-        
-        // Check if game has started and update role
-        if (data.started && data.assignedRoles) {
-          const myRole = data.assignedRoles.find(r => r.name === playerName);
-          if (myRole) {
-            const newRole = myRole.role;
-            
-            // Check if role has changed
-            if (window.currentRole && window.currentRole !== newRole) {
-              showRoleChangeAlert();
-            }
-            
-            // Update current role
-            window.currentRole = newRole;
-            updatePlayerRole(newRole);
-          }
-        }
-      });
+  onValue(sessionRef, (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return;
+    
+    // Update players list
+    updatePlayersList(data.playersList || []);
+    
+    // Check if game has started and update role
+    if (data.started && data.assignedRoles) {
+      const myRole = data.assignedRoles.find(r => r.name === playerName);
+      
+      // Check for role redistribution
+      if (data.redistribution_id && window.lastRedistributionId !== data.redistribution_id) {
+        // Always show alert on redistribution if game has started
+        showRoleChangeAlert();
+        window.lastRedistributionId = data.redistribution_id;
+      }
+      
+      // Update role display if role exists
+      if (myRole) {
+        window.currentRole = myRole.role;
+        updatePlayerRole(myRole.role);
+      }
     }
+  });
+}
     
     function updatePlayersList(playersList) {
       const playersElement = document.getElementById("players");
