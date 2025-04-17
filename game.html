@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إدارة جلسة المافيا</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Tajawal', sans-serif;
@@ -24,7 +23,6 @@
       border-radius: 20px;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     }
     input, button {
       width: 100%;
@@ -40,11 +38,6 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    button:hover {
-      background-color: #b71c1c;
-      transform: translateY(-2px);
     }
     .role-card {
       display: inline-block;
@@ -58,7 +51,30 @@
       height: auto;
       border-radius: 10px;
       animation: cardEntry 0.5s ease-out;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .countdown {
+      font-size: 80px;
+      margin-top: 30px;
+      font-weight: bold;
+      animation: pulse 1s infinite;
+      background: linear-gradient(45deg, #ff5722, #ffc107);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(255, 87, 34, 0.5);
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .redistribute {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: #ff5722;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
     }
     .waiting-message {
       font-size: 24px;
@@ -66,57 +82,7 @@
       font-weight: bold;
       margin-top: 20px;
     }
-    .countdown-container {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 6px solid #ff5722;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: radial-gradient(circle at center, #ff572230 0%, transparent 70%);
-  box-shadow: 0 0 20px #ff572250;
-  animation: pulse 1s infinite;
-}
-    .countdown-circle {
-  display: none;
-}
-    .countdown-border {
-  display: none;
-}
-    .countdown-number {
-  font-size: 48px;
-  font-weight: bold;
-  color: white;
-}
-    #countdownBox {
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-}
-    @keyframes countdown-animation {
-      0% { clip-path: polygon(50% 50%, 50% 0%, 50% 0%, 50% 50%); }
-      12.5% { clip-path: polygon(50% 50%, 50% 0%, 75% 0%, 50% 50%); }
-      25% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 0%, 50% 50%); }
-      37.5% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%, 50% 50%); }
-      50% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 50%); }
-      62.5% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 50% 50%); }
-      75% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 50% 50%); }
-      87.5% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 50% 50%); }
-      100% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%, 50% 50%); }
-    }
-    @keyframes pulse {
-  0% { transform: scale(1); box-shadow: 0 0 20px #ff572250; }
-  50% { transform: scale(1.1); box-shadow: 0 0 40px #ff572280; }
-  100% { transform: scale(1); box-shadow: 0 0 20px #ff572250; }
-}
-
-@keyframes cardEntry {
+    @keyframes cardEntry {
       0% { transform: scale(0.8); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
@@ -140,21 +106,15 @@
         <p id="roleName"></p>
       </div>
     </div>
-
-    <div id="countdownBox">
-      <div class="countdown-container">
-        <div class="countdown-circle">
-          <div class="countdown-number" id="countdownLabel">3</div>
-        </div>
-        <div class="countdown-border"></div>
-      </div>
+    <div id="countdownBox" style="display:none">
+      <p class="countdown" id="countdownLabel">⏳ 3</p>
     </div>
-
     <div class="waiting-message" id="waitingMessage" style="display:none">
       ننتظر الحكم ليبدأ المباراة...
     </div>
     <button class="redistribute" id="redistributeButton" onclick="redistributeRoles()" style="display:none;">إعادة توزيع الأدوار</button>
   </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
@@ -172,8 +132,6 @@
     const db = getDatabase(app);
     let sessionCode = "";
     let playerName = "";
-    let lastDistributionId = null;
-    let countdownInterval = null;
 
     window.joinGame = async () => {
       sessionCode = document.getElementById("code").value.trim();
@@ -185,31 +143,26 @@
         return;
       }
 
-      try {
-        const refPath = ref(db, `sessions/${sessionCode}`);
-        const snap = await get(refPath);
-        if (!snap.exists()) {
-          status.innerText = "الجلسة غير موجودة";
-          return;
-        }
-
-        const data = snap.val();
-        const players = data.playersList || [];
-        if (players.find(p => p.name === playerName)) {
-          status.innerText = "الاسم مستخدم بالفعل";
-          return;
-        }
-
-        players.push({ name: playerName });
-        await update(refPath, { playersList: players });
-
-        document.getElementById("joinBox").style.display = "none";
-        document.getElementById("roleBox").style.display = "block";
-        listenForUpdates(refPath);
-      } catch (error) {
-        status.innerText = "حدث خطأ أثناء الانضمام للجلسة";
-        console.error(error);
+      const refPath = ref(db, `sessions/${sessionCode}`);
+      const snap = await get(refPath);
+      if (!snap.exists()) {
+        status.innerText = "الجلسة غير موجودة";
+        return;
       }
+
+      const data = snap.val();
+      const players = data.playersList || [];
+      if (players.find(p => p.name === playerName)) {
+        status.innerText = "الاسم مستخدم بالفعل";
+        return;
+      }
+
+      players.push({ name: playerName });
+      await update(refPath, { playersList: players });
+
+      document.getElementById("joinBox").style.display = "none";
+      document.getElementById("roleBox").style.display = "block";
+      listenForUpdates(refPath);
     };
 
     function listenForUpdates(refPath) {
@@ -227,87 +180,56 @@
           document.getElementById("pointsLabel").innerText = `نقاطك: ${me.points || 0}`;
         }
 
-        if (!data.started || !data.assignedRoles) {
-          document.getElementById("waitingMessage").style.display = "block";
-          return;
-        }
+        if (!data.started || !data.assignedRoles) return;
 
-        document.getElementById("waitingMessage").style.display = "none";
-
-        const distributionId = data.redistribution_id || null;
         const myRole = data.assignedRoles.find(p => p.name === playerName);
-
         if (myRole) {
           document.getElementById("roleImage").src = getRoleImage(myRole.role);
-          document.getElementById("roleName").innerText = myRole.role;
-
-          if (distributionId !== lastDistributionId || lastDistributionId === null) {
-            lastDistributionId = distributionId;
-            showCountdown();
-          }
+          document.getElementById("roleName").innerText = ""; // Remove role name initially
+          showCountdown();
         }
       });
     }
 
     function getRoleImage(role) {
       switch (role) {
-        case "مواطن": return "https://i.ibb.co/Z6FMRxq/2x.png";
-        case "شايب": return "https://i.ibb.co/0y3SJF5/2x.png";
-        case "مافيا": return "https://i.ibb.co/Xr5DspH/2x.png";
-        case "دكتور": return "https://i.ibb.co/KpkctgT/2x.png";
-        default: return "https://i.ibb.co/Z6FMRxq/2x.png";
+        case "مواطن": return "https://i.ibb.co/Z6FMRxqY/2x.png";
+        case "شايب": return "https://i.ibb.co/0y3SJF59/2x.png";
+        case "مافيا": return "https://i.ibb.co/Xr5DspH8/2x.png";
+        case "دكتور": return "https://i.ibb.co/KpkctgTs/2x.png";
+        default: return "https://i.ibb.co/Z6FMRxqY/2x.png";
       }
     }
 
     function showCountdown() {
-      if (countdownInterval) {
-        clearInterval(countdownInterval);
-      }
-
       let countdown = 3;
       const countdownBox = document.getElementById("countdownBox");
       const countdownLabel = document.getElementById("countdownLabel");
-      const countdownBorder = document.querySelector('.countdown-border');
 
-      if (countdownBorder) {
-        countdownBorder.style.animation = 'none';
-        setTimeout(() => {
-          countdownBorder.style.animation = 'countdown-animation 3s linear';
-        }, 10);
-      }
-
-      countdownBox.style.display = "flex";
+      countdownBox.style.display = "block";
       document.getElementById("waitingMessage").style.display = "none";
       document.getElementById("roleImage").style.display = "none";
-      document.getElementById("roleName").style.display = "none";
-
-      countdownLabel.innerText = countdown;
-
-      countdownInterval = setInterval(() => {
-        countdown--;
-        countdownLabel.innerText = countdown;
-
+      const interval = setInterval(() => {
+        countdownLabel.innerText = `⏳ ${countdown}`;
         if (countdown === 0) {
-          clearInterval(countdownInterval);
-          countdownInterval = null;
+          clearInterval(interval);
           countdownBox.style.display = "none";
-          setTimeout(() => {
-            countdownBox.style.display = "none";
-            updateRole();
-          }, 900);
+          updateRole();
         }
+        countdown--;
       }, 1000);
     }
 
     function updateRole() {
       document.getElementById("roleImage").style.display = "block";
-      document.getElementById("roleName").style.display = "block";
+      const roleName = document.getElementById("roleName");
+      roleName.innerText = "دورك: " + roleName.innerText;
       document.getElementById("redistributeButton").style.display = "none";
     }
 
-    window.redistributeRoles = function() {
+    function redistributeRoles() {
       document.getElementById("roleImage").style.display = "none";
-      document.getElementById("countdownBox").style.display = "flex";
+      document.getElementById("countdownBox").style.display = "block";
       document.getElementById("waitingMessage").style.display = "none";
     }
   </script>
