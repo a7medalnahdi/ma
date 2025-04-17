@@ -175,11 +175,11 @@
 </div>
 <div class="code-box" id="sessionCodeBox" style="display: none;
   background-color: #333;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 22px;
+  padding: 20px;
+  border-radius: 15px;
+  font-size: 36px;
   font-weight: bold;
-  letter-spacing: 1px;
+  letter-spacing: 4px;
   color: #4caf50;
   margin-top: 15px;
   border: 2px dashed #4caf50;"></div>
@@ -258,7 +258,7 @@
       });
       document.getElementById("createSessionSection").style.display = "none";
       const codeBox = document.getElementById("sessionCodeBox");
-      codeBox.innerText = `🔢 كود الجلسة: ${sessionId}`;
+      codeBox.innerText = sessionId;
       codeBox.style.display = "block";
       const sessionRef = ref(db, `sessions/${sessionId}`);
       onValue(sessionRef, (snap) => {
