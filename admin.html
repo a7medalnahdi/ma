@@ -56,19 +56,76 @@
       border-radius: 8px;
       cursor: pointer;
     }
+    /* إضافة نمط جديد للأدوار */
+    .roles-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 15px 0;
+      background-color: #3a3a3a;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .role-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px;
+    }
+    .role-icon {
+      font-size: 1.5rem;
+    }
+    .role-name {
+      flex: 1;
+      text-align: right;
+    }
+    .total-players {
+      margin: 10px 0;
+      font-size: 18px;
+      padding: 10px;
+      background-color: #3a3a3a;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="box">
     <h2>إدارة جلسة المافيا</h2>
 
-    <label>عدد اللاعبين: <input type="number" id="players" value="6"></label>
-    <div>
-      👨‍🌾 مواطن <input type="number" id="citizen" value="2">
-      🧓 شايب <input type="number" id="oldman" value="1">
-      🕵️‍♂️ مافيا <input type="number" id="mafia" value="2">
-      🩺 دكتور <input type="number" id="doctor" value="1">
+    <div class="total-players">
+      👥 عدد اللاعبين: <input type="number" id="players" value="6" min="3" onchange="updateTotals()">
     </div>
+    
+    <div class="roles-container">
+      <div class="role-row">
+        <div class="role-icon">👨‍🌾</div>
+        <div class="role-name">مواطن</div>
+        <input type="number" id="citizen" value="2" min="0" onchange="updateTotals()">
+      </div>
+      
+      <div class="role-row">
+        <div class="role-icon">🧓</div>
+        <div class="role-name">شايب</div>
+        <input type="number" id="oldman" value="1" min="0" onchange="updateTotals()">
+      </div>
+      
+      <div class="role-row">
+        <div class="role-icon">🕵️‍♂️</div>
+        <div class="role-name">مافيا</div>
+        <input type="number" id="mafia" value="2" min="0" onchange="updateTotals()">
+      </div>
+      
+      <div class="role-row">
+        <div class="role-icon">🩺</div>
+        <div class="role-name">دكتور</div>
+        <input type="number" id="doctor" value="1" min="0" onchange="updateTotals()">
+      </div>
+      
+      <div id="roleSum" class="total-players" style="background-color: #d32f2f;">
+        مجموع الأدوار: 6/6
+      </div>
+    </div>
+    
     <button onclick="createSession()">🚀 إنشاء الجلسة</button>
     <div class="code-box" id="sessionCodeBox"></div>
 
@@ -99,19 +156,58 @@
     let assignedRoles = [];
     const playersList = document.getElementById("playersList");
 
+    // إضافة دالة التحقق من مجموع الأدوار
+    window.updateTotals = () => {
+      const players = parseInt(document.getElementById("players").value);
+      const citizen = parseInt(document.getElementById("citizen").value);
+      const oldman = parseInt(document.getElementById("oldman").value);
+      const mafia = parseInt(document.getElementById("mafia").value);
+      const doctor = parseInt(document.getElementById("doctor").value);
+      
+      const rolesSum = citizen + oldman + mafia + doctor;
+      const roleSumElement = document.getElementById("roleSum");
+      
+      roleSumElement.innerText = `مجموع الأدوار: ${rolesSum}/${players}`;
+      
+      if (rolesSum !== players) {
+        roleSumElement.style.backgroundColor = "#d32f2f"; // لون أحمر للتنبيه
+      } else {
+        roleSumElement.style.backgroundColor = "#4caf50"; // لون أخضر للتأكيد
+      }
+    };
+
+    // تنفيذ الدالة عند تحميل الصفحة
+    window.onload = () => {
+      updateTotals();
+    };
+
     function generateCode() {
       return Math.floor(1000 + Math.random() * 9000).toString();
     }
 
     window.createSession = async () => {
-      sessionId = generateCode();
       const players = parseInt(document.getElementById("players").value);
+      const citizen = parseInt(document.getElementById("citizen").value);
+      const oldman = parseInt(document.getElementById("oldman").value);
+      const mafia = parseInt(document.getElementById("mafia").value);
+      const doctor = parseInt(document.getElementById("doctor").value);
+      
+      const rolesSum = citizen + oldman + mafia + doctor;
+      
+      if (rolesSum !== players) {
+        alert("عدد الأدوار لا يطابق عدد اللاعبين!");
+        return;
+      }
+      
+      sessionId = generateCode();
+      
       const roles = {
-        citizen: +document.getElementById("citizen").value,
-        oldman: +document.getElementById("oldman").value,
-        mafia: +document.getElementById("mafia").value,
-        doctor: +document.getElementById("doctor").value,
+        citizen,
+        oldman,
+        mafia,
+        doctor
       };
+      
       await set(ref(db, `sessions/${sessionId}`), {
         players,
         roles,
@@ -189,7 +285,12 @@
       ];
       const shuffled = pool.sort(() => Math.random() - 0.5);
       const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
-      await update(sessionRef, { assignedRoles: assigned });
+      
+      // إضافة معرّف فريد لعملية إعادة التوزيع لإجبار العداد على الظهور
+      await update(sessionRef, { 
+        assignedRoles: assigned,
+        redistribution_id: Date.now() // إضافة معرّف زمني لإعادة التوزيع
+      });
       alert("تم إعادة توزيع الأدوار");
     };
   </script>
