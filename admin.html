@@ -2,23 +2,59 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>إدارة جلسة المافيا</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
+    * { box-sizing: border-box; }
     body {
       font-family: 'Tajawal', sans-serif;
-      background-color: #1c1c1c;
+      background: radial-gradient(circle at center, #1c1c1c 0%, #0d0d0d 100%);
+      background-size: cover;
       color: white;
       padding: 20px;
-      text-align: center;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent url('https://media.giphy.com/media/3o7abB06u9bNzA8lu8/giphy.gif') repeat;
+      background-size: cover;
+      opacity: 0.08;
+      z-index: -1;
     }
     .box {
-      max-width: 600px;
+      max-width: 800px;
       margin: auto;
-      padding: 20px;
-      background-color: #2e2e2e;
-      border-radius: 15px;
+      padding: 30px;
+      background: rgba(30, 30, 30, 0.9);
+      border-radius: 16px;
+      box-shadow: 0 0 40px #d32f2f88;
+      border: 2px solid #d32f2f;
+      animation: fadeIn 1s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h2 {
+      font-size: 26px;
+      background: linear-gradient(90deg, #ff4444, #ff0000);
+      background-size: 200% auto;
+      animation: textGlow 3s linear infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    @keyframes textGlow {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
     }
     input, button {
       padding: 10px;
@@ -27,18 +63,30 @@
       border: none;
       font-weight: bold;
     }
+    button {
+      background-color: #d32f2f;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 10px #d32f2f;
+      transition: 0.3s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #ff4444, 0 0 40px #ff4444aa;
+    }
     .number-control {
       display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 5px;
+      justify-content: center;
+      gap: 8px;
     }
     .number-control button {
-      background-color: #ffffff;
-      padding: 5px 10px;
+      background-color: #fff;
+      color: #d32f2f;
       font-size: 20px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      color: rgb(179, 20, 20);
     }
     input[type=number] {
       width: 50px;
@@ -46,363 +94,164 @@
       background: #444;
       color: white;
     }
-    ul { list-style: none; padding: 0; }
-    li {
-      background-color: #444;
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 10px;
+    .code-box {
+      background-color: #333;
+      padding: 20px;
+      border-radius: 15px;
+      font-size: 36px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      color: #4caf50;
+      margin: 20px auto;
+      border: 2px dashed #4caf50;
+      text-align: center;
+    }
+    .player-list li {
+      background-color: #2a2a2a;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
     }
-    .player-info {
-      flex: 1;
-      text-align: right;
-    }
-    button {
-      background-color: #d32f2f;
-      color: white;
-      cursor: pointer;
-    }
-    .code-box {
-      margin-top: 15px;
-      font-size: 20px;
-      color: #ffc107;
-    }
-    .remove-btn {
-      background: #b71c1c;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .roles-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin: 15px 0;
-      background-color: #3a3a3a;
-      padding: 15px;
-      border-radius: 10px;
-    }
-    .role-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 5px;
-    }
-    .role-icon {
-      font-size: 1.5rem;
-    }
-    .role-name {
-      flex: 1;
-      text-align: right;
-    }
-    .total-players {
-      margin: 10px 0;
-      font-size: 18px;
-      padding: 10px;
-      background-color: #3a3a3a;
-      border-radius: 10px;
-    }
-    #redistribution-msg, #points-msg {
-      color: #4caf50;
-      margin-top: 10px;
-      font-weight: bold;
-      display: none;
+    @media (max-width: 600px) {
+      .box { padding: 20px; }
+      .code-box { font-size: 28px; }
     }
   </style>
 </head>
 <body>
-  <div class="box">
+  <div class="stars"></div>
+  <div class="box" id="adminBox">
     <h2>إدارة جلسة المافيا</h2>
-
-    <div class="total-players">
-      👥 عدد اللاعبين: 
-      <div class="number-control">
-        <button onclick="adjustNumber('players', -1)">-</button>
-        <input type="number" id="players" value="6" min="3" onchange="updateTotals()">
-        <button onclick="adjustNumber('players', 1)">+</button>
-      </div>
+    <div id="content">
+  <div id="createSessionSection">
+    <label>عدد اللاعبين:</label>
+    <div class="number-control">
+      <button onclick="adjustNumber('players', -1)">-</button>
+      <input id="players" type="number" value="4" min="1" readonly>
+      <button onclick="adjustNumber('players', 1)">+</button>
     </div>
-
-    <div class="roles-container">
-      <div class="role-row">
-        <div class="role-icon">👨‍🌾</div>
-        <div class="role-name">مواطن</div>
-        <div class="number-control">
-          <button onclick="adjustNumber('citizen', -1)">-</button>
-          <input type="number" id="citizen" value="2" min="0" onchange="updateTotals()">
-          <button onclick="adjustNumber('citizen', 1)">+</button>
-        </div>
-      </div>
-      <div class="role-row">
-        <div class="role-icon">🧓</div>
-        <div class="role-name">شايب</div>
-        <div class="number-control">
-          <button onclick="adjustNumber('oldman', -1)">-</button>
-          <input type="number" id="oldman" value="1" min="0" onchange="updateTotals()">
-          <button onclick="adjustNumber('oldman', 1)">+</button>
-        </div>
-      </div>
-      <div class="role-row">
-        <div class="role-icon">🕵️‍♂️</div>
-        <div class="role-name">مافيا</div>
-        <div class="number-control">
-          <button onclick="adjustNumber('mafia', -1)">-</button>
-          <input type="number" id="mafia" value="2" min="0" onchange="updateTotals()">
-          <button onclick="adjustNumber('mafia', 1)">+</button>
-        </div>
-      </div>
-      <div class="role-row">
-        <div class="role-icon">🩺</div>
-        <div class="role-name">دكتور</div>
-        <div class="number-control">
-          <button onclick="adjustNumber('doctor', -1)">-</button>
-          <input type="number" id="doctor" value="1" min="0" onchange="updateTotals()">
-          <button onclick="adjustNumber('doctor', 1)">+</button>
-        </div>
-      </div>
-      <div id="roleSum" class="total-players" style="background-color: #d32f2f;">
-        مجموع الأدوار: 6/6
-      </div>
+    <br>
+    <label>عدد الأدوار:</label>
+    <div class="number-control">
+      👨‍👩‍👧‍👦 مواطن
+      <button onclick="adjustNumber('citizen', -1)">-</button>
+      <input id="citizen" type="number" value="1" min="0" readonly>
+      <button onclick="adjustNumber('citizen', 1)">+</button>
     </div>
-
-    <div id="createSessionSection">
-  <button onclick="createSession()">🚀 إنشاء الجلسة</button>
-</div>
-<div class="code-box" id="sessionCodeBox" style="display: none;
-  background-color: #333;
-  padding: 20px;
-  border-radius: 15px;
-  font-size: 36px;
-  font-weight: bold;
-  letter-spacing: 4px;
-  color: #4caf50;
-  margin-top: 15px;
-  border: 2px dashed #4caf50;"></div>
-
-    <h3>اللاعبين:</h3>
-    <ul id="playersList"></ul>
-
-    <div id="actionButtons" style="display: flex; flex-wrap: nowrap; gap: 10px; justify-content: center; flex-direction: row; margin-top: 20px;">
-  <button id="startGameBtn" onclick="startGame()" style="
-    background: linear-gradient(135deg, #1976d2, #0d47a1);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
-  " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
-    🎲 بدء اللعبة
-  </button>
-  <button id="pointsBtn" onclick="showWinnersList()" style="display: none; flex: 1 1 auto;
-    background: linear-gradient(135deg, #388e3c, #1b5e20);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
-  " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
-    ✅ توزيع النقاط
-  </button>
-  <button id="redistributeBtn" onclick="redistribute()" style="display: none; flex: 1 1 auto;
-    background: linear-gradient(135deg, #f57c00, #e65100);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
-  " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
-    🔁 إعادة التوزيع
-  </button>
-</div>
-    <div id="redistribution-msg">✅ تم إعادة توزيع الأدوار</div>
-    <div id="points-msg">✅ تم توزيع النقاط</div>
+    <div class="number-control">
+      👴🏻 شايب
+      <button onclick="adjustNumber('oldman', -1)">-</button>
+      <input id="oldman" type="number" value="1" min="0" readonly>
+      <button onclick="adjustNumber('oldman', 1)">+</button>
+    </div>
+    <div class="number-control">
+      🕵🏻‍♂️ مافيا
+      <button onclick="adjustNumber('mafia', -1)">-</button>
+      <input id="mafia" type="number" value="1" min="0" readonly>
+      <button onclick="adjustNumber('mafia', 1)">+</button>
+    </div>
+    <div class="number-control">
+      🧑🏻‍⚕️ دكتور
+      <button onclick="adjustNumber('doctor', -1)">-</button>
+      <input id="doctor" type="number" value="1" min="0" readonly>
+      <button onclick="adjustNumber('doctor', 1)">+</button>
+    </div>
+    <div id="roleSum" style="text-align:center;padding:10px;border-radius:10px;background:#d32f2f;margin:10px 0">
+      مجموع الأدوار: 0/0
+    </div>
+    <button onclick="createSession()">🚀 إنشاء الجلسة</button>
   </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-    const app = initializeApp({
-      apiKey: "AIzaSyBP2GPMVxCl2t3n3SFYqWDn585rftcBvGY",
-      authDomain: "mifianew.firebaseapp.com",
-      databaseURL: "https://mifianew-default-rtdb.firebaseio.com",
-      projectId: "mifianew",
-      storageBucket: "mifianew.firebasestorage.app",
-      messagingSenderId: "90140522196",
-      appId: "1:90140522196:web:64613821aa48b8db866d41"
-    });
-
-    const db = getDatabase(app);
-    let sessionId = "";
-    let assignedRoles = [];
-    const playersList = document.getElementById("playersList");
-
-    window.adjustNumber = (id, change) => {
-      const input = document.getElementById(id);
-      const current = parseInt(input.value);
-      const newVal = Math.max((input.min ? parseInt(input.min) : 0), current + change);
-      input.value = newVal;
-      updateTotals();
-    };
-
-    window.updateTotals = () => {
-      const players = parseInt(document.getElementById("players").value);
-      const citizen = parseInt(document.getElementById("citizen").value);
-      const oldman = parseInt(document.getElementById("oldman").value);
-      const mafia = parseInt(document.getElementById("mafia").value);
-      const doctor = parseInt(document.getElementById("doctor").value);
-      const rolesSum = citizen + oldman + mafia + doctor;
-      const roleSumElement = document.getElementById("roleSum");
-      roleSumElement.innerText = `مجموع الأدوار: ${rolesSum}/${players}`;
-      roleSumElement.style.backgroundColor = rolesSum === players ? "#4caf50" : "#d32f2f";
-    };
-
-    window.onload = () => { updateTotals(); };
-
-    function generateCode() {
-      return Math.floor(1000 + Math.random() * 9000).toString();
-    }
-
-    window.createSession = async () => {
-      const players = parseInt(document.getElementById("players").value);
-      const citizen = parseInt(document.getElementById("citizen").value);
-      const oldman = parseInt(document.getElementById("oldman").value);
-      const mafia = parseInt(document.getElementById("mafia").value);
-      const doctor = parseInt(document.getElementById("doctor").value);
-      const rolesSum = citizen + oldman + mafia + doctor;
-      if (rolesSum !== players) return alert("عدد الأدوار لا يطابق عدد اللاعبين!");
-      sessionId = generateCode();
-      const roles = { citizen, oldman, mafia, doctor };
-      await set(ref(db, `sessions/${sessionId}`), {
-        players,
-        roles,
-        playersList: [],
-        started: false,
-        points: {}
-      });
-      document.getElementById("createSessionSection").style.display = "none";
-      const codeBox = document.getElementById("sessionCodeBox");
-      codeBox.innerText = sessionId;
-      codeBox.style.display = "block";
-      const sessionRef = ref(db, `sessions/${sessionId}`);
-      onValue(sessionRef, (snap) => {
-        const data = snap.val();
-        assignedRoles = data.assignedRoles || [];
-        playersList.innerHTML = "";
-        data.playersList?.forEach(p => {
-          const role = assignedRoles.find(r => r.name === p.name)?.role || "—";
-          const li = document.createElement("li");
-          li.innerHTML = `
-  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 15px; flex-wrap: wrap; background: linear-gradient(135deg, #2a2a2a, #3a3a3a); border: 1px solid #555; border-radius: 16px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.4);">
-    <div style="flex: 1; text-align: right;">
-      <div style="font-size: 20px; font-weight: bold; color: #fff;">👤 ${p.name}</div>
-      <div style="font-size: 16px; color: #bbb; margin-top: 5px;">🎭 الدور: <strong style="color:#4caf50">${role}</strong></div>
-      <div style="font-size: 14px; color: #888; margin-top: 5px;">🏅 النقاط: ${p.points || 0}</div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-      <input type='checkbox' class='winner' value='${p.name}' title="اختيار كفائز" style="transform: scale(1.5); cursor: pointer;">
-      <button class='remove-btn' onclick="confirmRemovePlayer('${p.name}')" style="
-        background: linear-gradient(135deg, #ff1744, #d50000);
-        padding: 8px;
-        border: none;
-        border-radius: 10px;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        transition: transform 0.2s, box-shadow 0.2s;
-      " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.3)';">
-        <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='white' viewBox='0 0 16 16'>
-          <path d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/>
-        </svg>
-      </button>
-    </div>
-  `;
-          playersList.appendChild(li);
-        });
-      });
-    };
-
-    window.confirmRemovePlayer = (name) => {
-  if (confirm(`هل أنت متأكد من حذف اللاعب: ${name}؟`)) {
-    removePlayer(name);
-  }
-};
-
-window.removePlayer = async (name) => {
-  const sessionRef = ref(db, `sessions/${sessionId}`);
-  const snap = await get(sessionRef);
-  const players = snap.val().playersList.filter(p => p.name !== name);
-  await update(sessionRef, { playersList: players });
-};
-
-    window.startGame = async () => {
-  document.getElementById('startGameBtn').style.display = 'none';
-  document.getElementById('pointsBtn').style.display = 'inline-block';
-  document.getElementById('redistributeBtn').style.display = 'inline-block';
-      const sessionRef = ref(db, `sessions/${sessionId}`);
-      const snap = await get(sessionRef);
-      const data = snap.val();
-      const pool = [
-        ...Array(data.roles.citizen).fill("مواطن"),
-        ...Array(data.roles.oldman).fill("شايب"),
-        ...Array(data.roles.mafia).fill("مافيا"),
-        ...Array(data.roles.doctor).fill("دكتور")
-      ];
-      const shuffled = pool.sort(() => Math.random() - 0.5);
-      const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
-      await update(sessionRef, { started: true, assignedRoles: assigned });
-    };
-
-    window.showWinnersList = () => {
-      const checkboxes = document.querySelectorAll('.winner');
-      const winners = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-      givePoints(winners);
-    };
-
-    async function givePoints(winners) {
-      const sessionRef = ref(db, `sessions/${sessionId}`);
-      const snap = await get(sessionRef);
-      const list = snap.val().playersList.map(p => {
-        if (winners.includes(p.name)) p.points = (p.points || 0) + 100;
-        return p;
-      });
-      await update(sessionRef, { playersList: list });
-      const msg = document.getElementById("points-msg");
-      msg.style.display = "block";
-      setTimeout(() => { msg.style.display = "none"; }, 2000);
-    }
-
-    window.redistribute = async () => {
-      const sessionRef = ref(db, `sessions/${sessionId}`);
-      const snap = await get(sessionRef);
-      const data = snap.val();
-      const pool = [
-        ...Array(data.roles.citizen).fill("مواطن"),
-        ...Array(data.roles.oldman).fill("شايب"),
-        ...Array(data.roles.mafia).fill("مافيا"),
-        ...Array(data.roles.doctor).fill("دكتور")
-      ];
-      const shuffled = pool.sort(() => Math.random() - 0.5);
-      const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
-      await update(sessionRef, { assignedRoles: assigned, redistribution_id: Date.now() });
-      const msg = document.getElementById("redistribution-msg");
-      msg.style.display = "block";
-      setTimeout(() => { msg.style.display = "none"; }, 2000);
-    };
+  <div id="sessionCodeBox" class="code-box" style="display:none"></div>
+  <ul id="playersList" class="player-list"></ul>
+</div>
+  </div>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
   </script>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+  import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyBP2GPMVxCl2t3n3SFYqWDn585rftcBvGY",
+    authDomain: "mifianew.firebaseapp.com",
+    databaseURL: "https://mifianew-default-rtdb.firebaseio.com",
+    projectId: "mifianew",
+    storageBucket: "mifianew.firebasestorage.app",
+    messagingSenderId: "90140522196",
+    appId: "1:90140522196:web:64613821aa48b8db866d41"
+  });
+
+  const db = getDatabase(app);
+  let sessionId = "";
+  let assignedRoles = [];
+  const playersList = document.getElementById("playersList");
+
+  window.adjustNumber = (id, change) => {
+    const input = document.getElementById(id);
+    const current = parseInt(input.value);
+    const newVal = Math.max((input.min ? parseInt(input.min) : 0), current + change);
+    input.value = newVal;
+    updateTotals();
+  };
+
+  window.updateTotals = () => {
+    const players = parseInt(document.getElementById("players").value);
+    const citizen = parseInt(document.getElementById("citizen").value);
+    const oldman = parseInt(document.getElementById("oldman").value);
+    const mafia = parseInt(document.getElementById("mafia").value);
+    const doctor = parseInt(document.getElementById("doctor").value);
+    const rolesSum = citizen + oldman + mafia + doctor;
+    const roleSumElement = document.getElementById("roleSum");
+    roleSumElement.innerText = `مجموع الأدوار: ${rolesSum}/${players}`;
+    roleSumElement.style.backgroundColor = rolesSum === players ? "#4caf50" : "#d32f2f";
+  };
+
+  window.onload = () => { updateTotals(); };
+
+  function generateCode() {
+    return Math.floor(1000 + Math.random() * 9000).toString();
+  }
+
+  window.createSession = async () => {
+    const players = parseInt(document.getElementById("players").value);
+    const citizen = parseInt(document.getElementById("citizen").value);
+    const oldman = parseInt(document.getElementById("oldman").value);
+    const mafia = parseInt(document.getElementById("mafia").value);
+    const doctor = parseInt(document.getElementById("doctor").value);
+    const rolesSum = citizen + oldman + mafia + doctor;
+    if (rolesSum !== players) return alert("عدد الأدوار لا يطابق عدد اللاعبين!");
+    sessionId = generateCode();
+    const roles = { citizen, oldman, mafia, doctor };
+    await set(ref(db, `sessions/${sessionId}`), {
+      players,
+      roles,
+      playersList: [],
+      started: false,
+      points: {}
+    });
+    document.getElementById("createSessionSection").style.display = "none";
+    const codeBox = document.getElementById("sessionCodeBox");
+    codeBox.innerText = sessionId;
+    codeBox.style.display = "block";
+    const sessionRef = ref(db, `sessions/${sessionId}`);
+    onValue(sessionRef, (snap) => {
+      const data = snap.val();
+      assignedRoles = data.assignedRoles || [];
+      playersList.innerHTML = "";
+      data.playersList?.forEach(p => {
+        const role = assignedRoles.find(r => r.name === p.name)?.role || "—";
+        const li = document.createElement("li");
+        li.innerHTML = `<div style="flex:1">👤 ${p.name} - 🎭 <strong style="color:#4caf50">${role}</strong> - 🏅 ${p.points || 0}</div>`;
+        playersList.appendChild(li);
+      });
+    });
+  };
+</script>
 </body>
 </html>

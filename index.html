@@ -2,13 +2,18 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>مافيا - البداية</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Tajawal', sans-serif;
-      background-color: #1c1c1c;
+      background: radial-gradient(circle at center, #1c1c1c 0%, #0d0d0d 100%);
+      background-size: cover;
       color: white;
       display: flex;
       justify-content: center;
@@ -16,38 +21,97 @@
       flex-direction: column;
       min-height: 100vh;
       margin: 0;
+      overflow: hidden;
+      padding: 20px;
     }
     .container {
-      background-color: #2e2e2e;
+      background: rgba(30, 30, 30, 0.85);
       padding: 30px;
       border-radius: 16px;
       max-width: 400px;
-      width: 90%;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      width: 100%;
+      box-shadow: 0 0 40px #d32f2f88;
+      border: 2px solid #d32f2f;
       text-align: center;
+      position: relative;
+      z-index: 2;
     }
     h1 {
       margin-bottom: 30px;
+      font-size: 6vw;
+      max-font-size: 28px;
+      background: linear-gradient(90deg, #ff4444, #ff0000);
+      background-size: 200% auto;
+      animation: textGlow 3s linear infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    @keyframes textGlow {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
     }
     button {
       width: 100%;
       padding: 15px;
       border-radius: 10px;
       border: none;
-      font-size: 18px;
+      font-size: 16px;
       margin: 10px 0;
       background-color: #d32f2f;
       color: white;
       font-weight: bold;
       cursor: pointer;
+      box-shadow: 0 0 10px #d32f2f;
+      transition: 0.3s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #ff4444, 0 0 40px #ff4444aa;
+    }
+    .logo {
+      width: 20vw;
+      max-width: 100px;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent url('https://media.giphy.com/media/3o7abB06u9bNzA8lu8/giphy.gif') repeat;
+      background-size: cover;
+      opacity: 0.08;
+      z-index: 1;
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+      button {
+        padding: 12px;
+        font-size: 15px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎭 لعبة المافيا</h1>
-    <button onclick="location.href='admin.html'">🚀 إنشاء جلسة (مدير)</button>
-    <button onclick="location.href='game.html'">🎮 دخول جلسة (لاعب)</button>
+  <div class="stars"></div>
+  <div class="container" data-aos="zoom-in">
+    <img src="logo.png" alt="شعار اللعبة" class="logo" data-aos="fade-down">
+    <h1 data-aos="fade-up">🎭 لعبة المافيا</h1>
+    <button onclick="location.href='admin.html'" data-aos="fade-up" data-aos-delay="100">🚀 إنشاء جلسة (مدير)</button>
+    <button onclick="location.href='game.html'" data-aos="fade-up" data-aos-delay="200">🎮 دخول جلسة (لاعب)</button>
   </div>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
 </body>
 </html>
