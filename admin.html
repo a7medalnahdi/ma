@@ -6,6 +6,17 @@
   <title>إدارة جلسة المافيا</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    #settingsPanel {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+    #settingsPanel.open {
+      max-height: 2000px;
+      opacity: 1;
+    }
+
     body {
       font-family: 'Tajawal', sans-serif;
       background-color: #1c1c1c;
@@ -343,15 +354,9 @@
   function toggleSettings() {
   const panel = document.getElementById("settingsPanel");
   const btn = document.getElementById("settingsToggleBtn");
-  if (panel.style.maxHeight) {
-    panel.style.maxHeight = null;
-    panel.style.opacity = 0;
-    btn.innerText = '⚙️ إعدادات الجلسة ⬇️';
-  } else {
-    panel.style.maxHeight = panel.scrollHeight + "px";
-    panel.style.opacity = 1;
-    btn.innerText = '⚙️ إعدادات الجلسة ⬆️';
-  }
+  const isOpen = panel.classList.toggle("open");
+  btn.innerText = isOpen ? '⚙️ إعدادات الجلسة ⬆️' : '⚙️ إعدادات الجلسة ⬇️';
+} 
 } else {
     panel.style.maxHeight = panel.scrollHeight + "px";
     panel.style.opacity = 1;
