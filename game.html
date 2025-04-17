@@ -296,6 +296,7 @@
         if (countdown === 0) {
           clearInterval(countdownInterval);
           countdownInterval = null;
+          countdownBox.style.display = "none";
           setTimeout(() => {
             countdownBox.style.display = "none";
             updateRole();
