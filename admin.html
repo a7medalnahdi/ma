@@ -269,15 +269,15 @@
           const role = assignedRoles.find(r => r.name === p.name)?.role || "—";
           const li = document.createElement("li");
           li.innerHTML = `
-  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; background-color: #3a3a3a; border-radius: 12px; padding: 15px;">
-    <div style="text-align: right; flex: 1;">
-      <div style="font-size: 18px; font-weight: bold;">👤 ${p.name}</div>
-      <div style="font-size: 16px; color: #ccc;">🎭 الدور: <strong>${role}</strong></div>
-      <div style="font-size: 14px; color: #aaa;">🏅 النقاط: ${p.points || 0}</div>
+  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 15px; flex-wrap: wrap; background: linear-gradient(135deg, #2a2a2a, #3a3a3a); border: 1px solid #555; border-radius: 16px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.4);">
+    <div style="flex: 1; text-align: right;">
+      <div style="font-size: 20px; font-weight: bold; color: #fff;">👤 ${p.name}</div>
+      <div style="font-size: 16px; color: #bbb; margin-top: 5px;">🎭 الدور: <strong style="color:#4caf50">${role}</strong></div>
+      <div style="font-size: 14px; color: #888; margin-top: 5px;">🏅 النقاط: ${p.points || 0}</div>
     </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-      <input type='checkbox' class='winner' value='${p.name}' title="اختيار كفائز">
-      <button class='remove-btn' onclick="removePlayer('${p.name}')">❌</button>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+      <input type='checkbox' class='winner' value='${p.name}' title="اختيار كفائز" style="transform: scale(1.5); cursor: pointer;">
+      <button class='remove-btn' onclick="confirmRemovePlayer('${p.name}')">❌</button>
     </div>
   `;
           playersList.appendChild(li);
@@ -285,13 +285,18 @@
       });
     };
 
-    window.removePlayer = async (name) => {
-      const sessionRef = ref(db, `sessions/${sessionId}`);
-      const snap = await get(sessionRef);
-      const players = snap.val().playersList.filter(p => p.name !== name);
-      await update(sessionRef, { playersList: players });
-      alert(`${name} تم حذفه من الجلسة`);
-    };
+    window.confirmRemovePlayer = (name) => {
+  if (confirm(`هل أنت متأكد من حذف اللاعب: ${name}؟`)) {
+    removePlayer(name);
+  }
+};
+
+window.removePlayer = async (name) => {
+  const sessionRef = ref(db, `sessions/${sessionId}`);
+  const snap = await get(sessionRef);
+  const players = snap.val().playersList.filter(p => p.name !== name);
+  await update(sessionRef, { playersList: players });
+};
 
     window.startGame = async () => {
       const sessionRef = ref(db, `sessions/${sessionId}`);
