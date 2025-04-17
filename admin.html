@@ -187,7 +187,7 @@
     <h3>اللاعبين:</h3>
     <ul id="playersList"></ul>
 
-    <div id="actionButtons" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;">
+    <div id="actionButtons" style="display: flex; flex-wrap: nowrap; gap: 10px; justify-content: center; flex-direction: row; margin-top: 20px;">
   <button id="startGameBtn" onclick="startGame()" style="
     background: linear-gradient(135deg, #1976d2, #0d47a1);
     border-radius: 12px;
@@ -200,7 +200,7 @@
   " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
     🎲 بدء اللعبة
   </button>
-  <button id="pointsBtn" onclick="showWinnersList()" style="display: none;
+  <button id="pointsBtn" onclick="showWinnersList()" style="display: none; flex: 1 1 auto;
     background: linear-gradient(135deg, #388e3c, #1b5e20);
     border-radius: 12px;
     padding: 12px 20px;
@@ -212,7 +212,7 @@
   " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
     ✅ توزيع النقاط
   </button>
-  <button id="redistributeBtn" onclick="redistribute()" style="display: none;
+  <button id="redistributeBtn" onclick="redistribute()" style="display: none; flex: 1 1 auto;
     background: linear-gradient(135deg, #f57c00, #e65100);
     border-radius: 12px;
     padding: 12px 20px;
