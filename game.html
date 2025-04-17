@@ -66,11 +66,8 @@
       font-weight: bold;
       margin-top: 20px;
     }
-    
-    /* عداد محسّن */
     .countdown-container {
       position: relative;
-      margin: 30px auto;
       width: 150px;
       height: 150px;
     }
@@ -104,7 +101,16 @@
       color: white;
       z-index: 2;
     }
-    
+    #countdownBox {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
     @keyframes countdown-animation {
       0% { clip-path: polygon(50% 50%, 50% 0%, 50% 0%, 50% 50%); }
       12.5% { clip-path: polygon(50% 50%, 50% 0%, 75% 0%, 50% 50%); }
@@ -116,7 +122,6 @@
       87.5% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 50% 50%); }
       100% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%, 50% 50%); }
     }
-    
     @keyframes cardEntry {
       0% { transform: scale(0.8); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
@@ -141,9 +146,8 @@
         <p id="roleName"></p>
       </div>
     </div>
-    
-    <!-- عداد محسّن -->
-    <div id="countdownBox" style="display:none">
+
+    <div id="countdownBox">
       <div class="countdown-container">
         <div class="countdown-circle">
           <div class="countdown-number" id="countdownLabel">3</div>
@@ -151,13 +155,12 @@
         <div class="countdown-border"></div>
       </div>
     </div>
-    
+
     <div class="waiting-message" id="waitingMessage" style="display:none">
       ننتظر الحكم ليبدأ المباراة...
     </div>
     <button class="redistribute" id="redistributeButton" onclick="redistributeRoles()" style="display:none;">إعادة توزيع الأدوار</button>
   </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
@@ -234,16 +237,16 @@
           document.getElementById("waitingMessage").style.display = "block";
           return;
         }
-        
+
         document.getElementById("waitingMessage").style.display = "none";
 
         const distributionId = data.redistribution_id || null;
         const myRole = data.assignedRoles.find(p => p.name === playerName);
-        
+
         if (myRole) {
           document.getElementById("roleImage").src = getRoleImage(myRole.role);
           document.getElementById("roleName").innerText = myRole.role;
-          
+
           if (distributionId !== lastDistributionId || lastDistributionId === null) {
             lastDistributionId = distributionId;
             showCountdown();
@@ -266,13 +269,12 @@
       if (countdownInterval) {
         clearInterval(countdownInterval);
       }
-      
+
       let countdown = 3;
       const countdownBox = document.getElementById("countdownBox");
       const countdownLabel = document.getElementById("countdownLabel");
       const countdownBorder = document.querySelector('.countdown-border');
 
-      // إعادة تعيين الرسوم المتحركة
       if (countdownBorder) {
         countdownBorder.style.animation = 'none';
         setTimeout(() => {
@@ -280,24 +282,24 @@
         }, 10);
       }
 
-      countdownBox.style.display = "block";
+      countdownBox.style.display = "flex";
       document.getElementById("waitingMessage").style.display = "none";
       document.getElementById("roleImage").style.display = "none";
       document.getElementById("roleName").style.display = "none";
-      
+
       countdownLabel.innerText = countdown;
-      
+
       countdownInterval = setInterval(() => {
         countdown--;
         countdownLabel.innerText = countdown;
-        
+
         if (countdown === 0) {
           clearInterval(countdownInterval);
           countdownInterval = null;
           setTimeout(() => {
             countdownBox.style.display = "none";
             updateRole();
-          }, 900); // انتظر لإنهاء الرسوم المتحركة
+          }, 900);
         }
       }, 1000);
     }
@@ -310,7 +312,7 @@
 
     window.redistributeRoles = function() {
       document.getElementById("roleImage").style.display = "none";
-      document.getElementById("countdownBox").style.display = "block";
+      document.getElementById("countdownBox").style.display = "flex";
       document.getElementById("waitingMessage").style.display = "none";
     }
   </script>
