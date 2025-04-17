@@ -269,9 +269,17 @@
           const role = assignedRoles.find(r => r.name === p.name)?.role || "—";
           const li = document.createElement("li");
           li.innerHTML = `
-            <div class='player-info'><label><input type='checkbox' class='winner' value='${p.name}'> ${p.name} - <strong>${role}</strong> - 🏅 ${p.points || 0} نقطة</label></div>
-            <button class='remove-btn' onclick="removePlayer('${p.name}')">❌</button>
-          `;
+  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; background-color: #3a3a3a; border-radius: 12px; padding: 15px;">
+    <div style="text-align: right; flex: 1;">
+      <div style="font-size: 18px; font-weight: bold;">👤 ${p.name}</div>
+      <div style="font-size: 16px; color: #ccc;">🎭 الدور: <strong>${role}</strong></div>
+      <div style="font-size: 14px; color: #aaa;">🏅 النقاط: ${p.points || 0}</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+      <input type='checkbox' class='winner' value='${p.name}' title="اختيار كفائز">
+      <button class='remove-btn' onclick="removePlayer('${p.name}')">❌</button>
+    </div>
+  `;
           playersList.appendChild(li);
         });
       });
