@@ -595,13 +595,13 @@
         
         // Check if role redistribution occurred
         if (window.lastRedistributionId !== null && data.redistribution_id !== window.lastRedistributionId) {
-          window.lastRedistributionId = data.redistribution_id;
-          
-          // Only show alert if we already had a role
-          if (window.currentRole) {
-            showRoleChangeAlert();
-          }
-        }
+  window.lastRedistributionId = data.redistribution_id;
+  
+  // Show alert whenever redistribution happens, regardless of role change
+  if (data.started) {
+    showRoleChangeAlert();
+  }
+}
         
         // Check if game has started and update role
         if (data.started && data.assignedRoles) {
