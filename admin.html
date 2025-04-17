@@ -128,62 +128,7 @@
 </head>
 <body>
   <div class="box">
-    <button onclick="toggleSettings()" id="settingsToggleBtn" style="margin-bottom: 10px; background-color: #4caf50;">⚙️ إعدادات الجلسة ⬇️</button>
-    <div id="settingsPanel" style="max-height: 0; overflow: hidden; opacity: 0; transition: all 0.5s ease;">
-    <h2>إدارة جلسة المافيا</h2>
-
-    <div class="total-players">
-      👥 عدد اللاعبين: 
-      <div class="number-control">
-        <button onclick="adjustNumber('players', -1)">-</button>
-        <input type="number" id="players" value="6" min="3" onchange="updateTotals()">
-        <button onclick="adjustNumber('players', 1)">+</button>
-      </div>
-    </div>
-
-    <div class="roles-container">
-      <div class="role-row">
-        <div class="role-icon">👨‍🌾</div>
-        <div class="role-name">مواطن</div>
-        <div class="number-control">
-          <button onclick="adjustNumber('citizen', -1)">-</button>
-          <input type="number" id="citizen" value="2" min="0" onchange="updateTotals()">
-          <button onclick="adjustNumber('citizen', 1)">+</button>
-        </div>
-      </div>
-      <div class="role-row">
-        <div class="role-icon">🧓</div>
-        <div class="role-name">شايب</div>
-        <div class="number-control">
-          <button onclick="adjustNumber('oldman', -1)">-</button>
-          <input type="number" id="oldman" value="1" min="0" onchange="updateTotals()">
-          <button onclick="adjustNumber('oldman', 1)">+</button>
-        </div>
-      </div>
-      <div class="role-row">
-        <div class="role-icon">🕵️‍♂️</div>
-        <div class="role-name">مافيا</div>
-        <div class="number-control">
-          <button onclick="adjustNumber('mafia', -1)">-</button>
-          <input type="number" id="mafia" value="2" min="0" onchange="updateTotals()">
-          <button onclick="adjustNumber('mafia', 1)">+</button>
-        </div>
-      </div>
-      <div class="role-row">
-        <div class="role-icon">🩺</div>
-        <div class="role-name">دكتور</div>
-        <div class="number-control">
-          <button onclick="adjustNumber('doctor', -1)">-</button>
-          <input type="number" id="doctor" value="1" min="0" onchange="updateTotals()">
-          <button onclick="adjustNumber('doctor', 1)">+</button>
-        </div>
-      </div>
-      <div id="roleSum" class="total-players" style="background-color: #d32f2f;">
-        مجموع الأدوار: 6/6
-      </div>
-    </div>
-
-    </div> <!-- نهاية settingsPanel -->
+    
 
     <div id="createSessionSection">
   <button onclick="createSession()">🚀 إنشاء الجلسة</button>
