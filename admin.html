@@ -187,9 +187,44 @@
     <h3>اللاعبين:</h3>
     <ul id="playersList"></ul>
 
-    <button onclick="startGame()">🎲 بدء اللعبة</button>
-    <button onclick="showWinnersList()">✅ توزيع النقاط</button>
-    <button onclick="redistribute()">🔁 إعادة التوزيع</button>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;">
+  <button onclick="startGame()" style="
+    background: linear-gradient(135deg, #1976d2, #0d47a1);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
+    🎲 بدء اللعبة
+  </button>
+  <button onclick="showWinnersList()" style="
+    background: linear-gradient(135deg, #388e3c, #1b5e20);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
+    ✅ توزيع النقاط
+  </button>
+  <button onclick="redistribute()" style="
+    background: linear-gradient(135deg, #f57c00, #e65100);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
+    🔁 إعادة التوزيع
+  </button>
+</div>
     <div id="redistribution-msg">✅ تم إعادة توزيع الأدوار</div>
     <div id="points-msg">✅ تم توزيع النقاط</div>
   </div>
