@@ -277,7 +277,21 @@
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
       <input type='checkbox' class='winner' value='${p.name}' title="اختيار كفائز" style="transform: scale(1.5); cursor: pointer;">
-      <button class='remove-btn' onclick="confirmRemovePlayer('${p.name}')">❌</button>
+      $1
+        background: linear-gradient(135deg, #ff1744, #d50000);
+        padding: 10px;
+        border: none;
+        border-radius: 50%;
+        font-size: 18px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        transition: transform 0.2s, box-shadow 0.2s;
+      $2
     </div>
   `;
           playersList.appendChild(li);
