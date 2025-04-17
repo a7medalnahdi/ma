@@ -117,8 +117,8 @@
 </head>
 <body>
   <div class="box">
-    <button onclick="toggleSettings()" style="margin-bottom: 10px; background-color: #4caf50;">⚙️ إعدادات الجلسة</button>
-    <div id="settingsPanel" style="display: none;">
+    <button onclick="toggleSettings()" id="settingsToggleBtn" style="margin-bottom: 10px; background-color: #4caf50;">⚙️ إعدادات الجلسة ⬇️</button>
+    <div id="settingsPanel" style="max-height: 0; overflow: hidden; opacity: 0; transition: all 0.5s ease;">
     <h2>إدارة جلسة المافيا</h2>
 
     <div class="total-players">
@@ -342,7 +342,20 @@
     };
   function toggleSettings() {
   const panel = document.getElementById("settingsPanel");
-  panel.style.display = panel.style.display === "none" ? "block" : "none";
+  const btn = document.getElementById("settingsToggleBtn");
+  if (panel.style.maxHeight) {
+    panel.style.maxHeight = null;
+    panel.style.opacity = 0;
+    btn.innerText = '⚙️ إعدادات الجلسة ⬇️';
+  } else {
+    panel.style.maxHeight = panel.scrollHeight + "px";
+    panel.style.opacity = 1;
+    btn.innerText = '⚙️ إعدادات الجلسة ⬆️';
+  }
+} else {
+    panel.style.maxHeight = panel.scrollHeight + "px";
+    panel.style.opacity = 1;
+  }
 }
 </script>
 </body>
