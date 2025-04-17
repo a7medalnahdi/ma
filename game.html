@@ -1,123 +1,365 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إدارة جلسة المافيا</title>
+  <title>مافيا - انضمام للجلسة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #1e1e2e;
+      --secondary: #292942;
+      --accent: #4a6bff;
+      --accent-hover: #3652d8;
+      --text: #ffffff;
+      --text-secondary: #b8b8d0;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
       font-family: 'Tajawal', sans-serif;
-      background-color: #1c1c1c;
-      color: white;
+      background: radial-gradient(circle at center, #252540, #1e1e2e);
+      color: var(--text);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
-      min-height: 100vh;
-      margin: 0;
-      text-align: center;
+      padding: 20px;
     }
-    .box {
-      background-color: #2e2e2e;
-      padding: 30px;
-      border-radius: 20px;
-      width: 90%;
+    
+    .container {
+      background-color: var(--secondary);
+      padding: 40px 30px;
+      border-radius: 24px;
       max-width: 400px;
-    }
-    input, button {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-    }
-    input { background: white; color: black; }
-    button {
-      background-color: #d32f2f;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .role-card {
-      display: inline-block;
-      margin: 10px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4), 
+                 0 4px 6px rgba(0,0,0,0.2),
+                 inset 0 1px 1px rgba(255,255,255,0.1);
       text-align: center;
-      width: 280px;
+      position: relative;
+      overflow: hidden;
     }
-    .role-card img {
-      width: 100%;
-      max-width: 280px;
-      height: auto;
-      border-radius: 10px;
-      animation: cardEntry 0.5s ease-out;
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--accent), #6c8fff);
+      z-index: 1;
     }
-    .countdown {
-      font-size: 80px;
-      margin-top: 30px;
-      font-weight: bold;
-      animation: pulse 1s infinite;
-      background: linear-gradient(45deg, #ff5722, #ffc107);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 10px rgba(255, 87, 34, 0.5);
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 0.8; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .redistribute {
+    
+    h1 {
+      margin-bottom: 40px;
+      font-size: 36px;
+      position: relative;
       display: inline-block;
-      margin-top: 20px;
-      background-color: #ff5722;
-      padding: 10px 20px;
-      color: white;
-      border-radius: 10px;
-      cursor: pointer;
     }
-    .waiting-message {
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 25%;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      text-align: right;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 18px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 14px;
+      border: 2px solid #3d3d5a;
+      background-color: #373752;
+      color: var(--text);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+    }
+    
+    .form-group input::placeholder {
+      color: #8585a0;
+    }
+    
+    .code-input {
+      letter-spacing: 6px;
       font-size: 24px;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 18px 20px;
+      border-radius: 14px;
+      border: none;
+      font-size: 18px;
+      margin: 16px 0;
+      background: linear-gradient(135deg, var(--accent), #3652d8);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 12px rgba(74, 107, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(74, 107, 255, 0.4);
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 10px rgba(74, 107, 255, 0.3);
+    }
+    
+    .btn span {
+      margin-right: 12px;
+      font-size: 22px;
+    }
+    
+    .shadow-effect {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.05);
+      transform: skewX(45deg) translateX(-150%);
+      transition: all 0.7s ease;
+    }
+    
+    .btn:hover .shadow-effect {
+      transform: skewX(45deg) translateX(150%);
+    }
+    
+    .home-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: #3d3d5a;
+      color: var(--text);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      text-decoration: none;
+    }
+    
+    .home-btn:hover {
+      background: #4a4a6a;
+      transform: translateY(-2px);
+    }
+    
+    .player-section {
+      display: none;
+    }
+    
+    .player-role {
+      background-color: #3a3a3a;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+      text-align: center;
+      border: 2px solid #4a6bff;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .player-role h3 {
+      margin-bottom: 10px;
+      font-size: 22px;
+    }
+    
+    .role-icon {
+      font-size: 60px;
+      margin: 20px 0;
+    }
+    
+    .role-name {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #4caf50;
+    }
+    
+    .role-description {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    .players-list {
+      margin-top: 20px;
+      background-color: #3a3a3a;
+      border-radius: 15px;
+      padding: 15px;
+      text-align: right;
+    }
+    
+    .players-list h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+      text-align: center;
+    }
+    
+    .players-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .players-list li {
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background-color: #444;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .players-list .player-name {
+      font-weight: 500;
+    }
+    
+    .players-list .player-points {
       color: #ffc107;
       font-weight: bold;
-      margin-top: 20px;
     }
-    @keyframes cardEntry {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+    
+    .message {
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 10px;
+      font-weight: bold;
+      display: none;
+    }
+    
+    .success {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+      border: 1px solid #4caf50;
+    }
+    
+    .error {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: #f44336;
+      border: 1px solid #f44336;
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 400px) {
+      .container {
+        padding: 30px 20px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+      
+      .code-input {
+        letter-spacing: 4px;
+        font-size: 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="box" id="joinBox">
-    <h2>🎮 دخول إلى جلسة</h2>
-    <input id="code" placeholder="كود الجلسة">
-    <input id="name" placeholder="اسم اللاعب">
-    <button onclick="joinGame()">انضمام</button>
-    <div id="status"></div>
-  </div>
-
-  <div class="box" id="roleBox" style="display:none">
-    <h2>🎭 دورك:</h2>
-    <p id="pointsLabel">نقاطك: --</p>
-    <div id="roleCardsContainer">
-      <div class="role-card" id="roleCard">
-        <img id="roleImage" src="" alt="دور اللاعب" />
-        <p id="roleName"></p>
+  <div class="container">
+    <a href="index.html" class="home-btn">🏠</a>
+    <h1>🎮 انضمام للجلسة</h1>
+    
+    <div id="joinForm">
+      <div class="form-group">
+        <label for="sessionCode">رمز الجلسة:</label>
+        <input type="text" id="sessionCode" class="code-input" placeholder="0000" maxlength="4" autocomplete="off">
+      </div>
+      
+      <div class="form-group">
+        <label for="playerName">اسمك:</label>
+        <input type="text" id="playerName" placeholder="أدخل اسمك" autocomplete="off">
+      </div>
+      
+      <button class="btn" id="joinBtn" onclick="joinSession()">
+        <span>👋</span> انضمام للجلسة
+        <div class="shadow-effect"></div>
+      </button>
+      
+      <div id="errorMessage" class="message error"></div>
+      <div id="successMessage" class="message success"></div>
+    </div>
+    
+    <div id="playerSection" class="player-section">
+      <div class="player-role">
+        <h3>دورك في اللعبة</h3>
+        <div id="roleIcon" class="role-icon">❓</div>
+        <div id="roleName" class="role-name">انتظار بدء اللعبة...</div>
+        <div id="roleDescription" class="role-description">سيتم تعيين دورك عندما يبدأ مدير الجلسة اللعبة.</div>
+      </div>
+      
+      <div class="players-list">
+        <h3>اللاعبين في الجلسة</h3>
+        <ul id="players"></ul>
       </div>
     </div>
-    <div id="countdownBox" style="display:none">
-      <p class="countdown" id="countdownLabel">⏳ 3</p>
-    </div>
-    <div class="waiting-message" id="waitingMessage" style="display:none">
-      ننتظر الحكم ليبدأ المباراة...
-    </div>
-    <button class="redistribute" id="redistributeButton" onclick="redistributeRoles()" style="display:none;">إعادة توزيع الأدوار</button>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, get, update, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const app = initializeApp({
       apiKey: "AIzaSyBP2GPMVxCl2t3n3SFYqWDn585rftcBvGY",
@@ -130,107 +372,203 @@
     });
 
     const db = getDatabase(app);
-    let sessionCode = "";
-    let playerName = "";
-
-    window.joinGame = async () => {
-      sessionCode = document.getElementById("code").value.trim();
-      playerName = document.getElementById("name").value.trim();
-      const status = document.getElementById("status");
-
-      if (!sessionCode || !playerName) {
-        status.innerText = "يرجى تعبئة جميع الحقول";
-        return;
+    
+    // Make functions globally accessible
+    window.db = db;
+    window.currentSession = null;
+    window.playerName = "";
+    
+    // Role information and icons
+    const roleDetails = {
+      "مواطن": {
+        icon: "👨‍🌾",
+        description: "أنت مواطن عادي، هدفك هو اكتشاف المافيا والتصويت ضدهم قبل أن يقضوا عليك."
+      },
+      "شايب": {
+        icon: "🧓",
+        description: "أنت الشايب، تمتلك خبرة الحياة. لديك القدرة على معرفة هوية لاعب واحد في الليل."
+      },
+      "مافيا": {
+        icon: "🕵️‍♂️",
+        description: "أنت عضو في المافيا! هدفك القضاء على المواطنين. في الليل تختار مع فريقك ضحية للقتل."
+      },
+      "دكتور": {
+        icon: "🩺",
+        description: "أنت الدكتور، يمكنك حماية لاعب واحد كل ليلة من هجوم المافيا، بما في ذلك نفسك."
       }
-
-      const refPath = ref(db, `sessions/${sessionCode}`);
-      const snap = await get(refPath);
-      if (!snap.exists()) {
-        status.innerText = "الجلسة غير موجودة";
-        return;
-      }
-
-      const data = snap.val();
-      const players = data.playersList || [];
-      if (players.find(p => p.name === playerName)) {
-        status.innerText = "الاسم مستخدم بالفعل";
-        return;
-      }
-
-      players.push({ name: playerName });
-      await update(refPath, { playersList: players });
-
-      document.getElementById("joinBox").style.display = "none";
-      document.getElementById("roleBox").style.display = "block";
-      listenForUpdates(refPath);
     };
 
-    function listenForUpdates(refPath) {
-      onValue(refPath, (snap) => {
-        const data = snap.val();
-
-        const stillInGame = data.playersList?.some(p => p.name === playerName);
-        if (!stillInGame) {
-          alert("❌ تم حذفك من الجلسة من قبل المدير، حاول الانضمام من جديد");
-          location.reload();
+    window.joinSession = async () => {
+      const sessionCode = document.getElementById("sessionCode").value.trim();
+      const playerName = document.getElementById("playerName").value.trim();
+      
+      // Check if inputs are valid
+      if (!sessionCode || sessionCode.length !== 4) {
+        showError("يرجى إدخال رمز جلسة صحيح (4 أرقام)");
+        return;
+      }
+      
+      if (!playerName) {
+        showError("يرجى إدخال اسمك");
+        return;
+      }
+      
+      // Disable button and show loading
+      const joinBtn = document.getElementById("joinBtn");
+      joinBtn.disabled = true;
+      joinBtn.innerHTML = '<span>⏳</span> جاري الانضمام... <div class="loading"></div>';
+      
+      try {
+        // Check if session exists
+        const sessionRef = ref(db, `sessions/${sessionCode}`);
+        const sessionSnap = await get(sessionRef);
+        
+        if (!sessionSnap.exists()) {
+          showError("رمز الجلسة غير صحيح. يرجى التحقق والمحاولة مرة أخرى.");
+          resetJoinButton();
+          return;
         }
-
-        const me = data.playersList?.find(p => p.name === playerName);
-        if (me) {
-          document.getElementById("pointsLabel").innerText = `نقاطك: ${me.points || 0}`;
+        
+        const sessionData = sessionSnap.val();
+        
+        // Check if player name already exists
+        if (sessionData.playersList && sessionData.playersList.some(p => p.name === playerName)) {
+          showError("هذا الاسم مستخدم بالفعل في هذه الجلسة. يرجى اختيار اسم آخر.");
+          resetJoinButton();
+          return;
         }
-
-        if (!data.started || !data.assignedRoles) return;
-
-        const myRole = data.assignedRoles.find(p => p.name === playerName);
-        if (myRole) {
-          document.getElementById("roleImage").src = getRoleImage(myRole.role);
-          document.getElementById("roleName").innerText = ""; // Remove role name initially
-          showCountdown();
+        
+        // Check if session is full
+        if (sessionData.playersList && sessionData.playersList.length >= sessionData.players) {
+          showError("هذه الجلسة ممتلئة بالفعل. لا يمكن إضافة المزيد من اللاعبين.");
+          resetJoinButton();
+          return;
+        }
+        
+        // Add player to session
+        let updatedPlayersList = sessionData.playersList || [];
+        updatedPlayersList.push({ name: playerName, points: 0 });
+        
+        await update(ref(db, `sessions/${sessionCode}`), {
+          playersList: updatedPlayersList
+        });
+        
+        // Set global variables
+        window.currentSession = sessionCode;
+        window.playerName = playerName;
+        
+        // Show success message
+        showSuccess("تم الانضمام للجلسة بنجاح!");
+        
+        // Switch to player section
+        document.getElementById("joinForm").style.display = "none";
+        document.getElementById("playerSection").style.display = "block";
+        
+        // Set up session listener
+        setupSessionListener(sessionCode, playerName);
+        
+      } catch (error) {
+        console.error("Error joining session:", error);
+        showError("حدث خطأ أثناء الانضمام للجلسة. يرجى المحاولة مرة أخرى.");
+        resetJoinButton();
+      }
+    };
+    
+    function resetJoinButton() {
+      const joinBtn = document.getElementById("joinBtn");
+      joinBtn.disabled = false;
+      joinBtn.innerHTML = '<span>👋</span> انضمام للجلسة <div class="shadow-effect"></div>';
+    }
+    
+    function showError(message) {
+      const errorElement = document.getElementById("errorMessage");
+      errorElement.textContent = message;
+      errorElement.style.display = "block";
+      
+      // Hide after 5 seconds
+      setTimeout(() => {
+        errorElement.style.display = "none";
+      }, 5000);
+    }
+    
+    function showSuccess(message) {
+      const successElement = document.getElementById("successMessage");
+      successElement.textContent = message;
+      successElement.style.display = "block";
+      
+      // Hide after 3 seconds
+      setTimeout(() => {
+        successElement.style.display = "none";
+      }, 3000);
+    }
+    
+    function setupSessionListener(sessionId, playerName) {
+      const sessionRef = ref(db, `sessions/${sessionId}`);
+      
+      onValue(sessionRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        
+        // Update players list
+        updatePlayersList(data.playersList || []);
+        
+        // Check if game has started and update role
+        if (data.started && data.assignedRoles) {
+          const myRole = data.assignedRoles.find(r => r.name === playerName);
+          if (myRole) {
+            updatePlayerRole(myRole.role);
+          }
         }
       });
     }
-
-    function getRoleImage(role) {
-      switch (role) {
-        case "مواطن": return "https://i.ibb.co/Z6FMRxqY/2x.png";
-        case "شايب": return "https://i.ibb.co/0y3SJF59/2x.png";
-        case "مافيا": return "https://i.ibb.co/Xr5DspH8/2x.png";
-        case "دكتور": return "https://i.ibb.co/KpkctgTs/2x.png";
-        default: return "https://i.ibb.co/Z6FMRxqY/2x.png";
-      }
-    }
-
-    function showCountdown() {
-      let countdown = 3;
-      const countdownBox = document.getElementById("countdownBox");
-      const countdownLabel = document.getElementById("countdownLabel");
-
-      countdownBox.style.display = "block";
-      document.getElementById("waitingMessage").style.display = "none";
-      document.getElementById("roleImage").style.display = "none";
-      const interval = setInterval(() => {
-        countdownLabel.innerText = `⏳ ${countdown}`;
-        if (countdown === 0) {
-          clearInterval(interval);
-          countdownBox.style.display = "none";
-          updateRole();
+    
+    function updatePlayersList(playersList) {
+      const playersElement = document.getElementById("players");
+      playersElement.innerHTML = "";
+      
+      playersList.forEach(player => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="player-name">${player.name}</span>
+          <span class="player-points">🏅 ${player.points || 0}</span>
+        `;
+        
+        // Highlight current player
+        if (player.name === window.playerName) {
+          li.style.border = "2px solid #4caf50";
         }
-        countdown--;
-      }, 1000);
+        
+        playersElement.appendChild(li);
+      });
     }
-
-    function updateRole() {
-      document.getElementById("roleImage").style.display = "block";
-      const roleName = document.getElementById("roleName");
-      roleName.innerText = "دورك: " + roleName.innerText;
-      document.getElementById("redistributeButton").style.display = "none";
-    }
-
-    function redistributeRoles() {
-      document.getElementById("roleImage").style.display = "none";
-      document.getElementById("countdownBox").style.display = "block";
-      document.getElementById("waitingMessage").style.display = "none";
+    
+    function updatePlayerRole(role) {
+      const roleInfo = roleDetails[role] || { 
+        icon: "❓", 
+        description: "دور غير معروف" 
+      };
+      
+      document.getElementById("roleIcon").textContent = roleInfo.icon;
+      document.getElementById("roleName").textContent = role;
+      document.getElementById("roleDescription").textContent = roleInfo.description;
+      
+      // Add visual effects based on role
+      const roleElement = document.querySelector(".player-role");
+      
+      // Reset previous styling
+      roleElement.style.borderColor = "#4a6bff";
+      
+      // Apply role-specific styling
+      if (role === "مافيا") {
+        roleElement.style.borderColor = "#ff3e3e";
+        document.getElementById("roleName").style.color = "#ff3e3e";
+      } else if (role === "دكتور") {
+        roleElement.style.borderColor = "#4caf50";
+        document.getElementById("roleName").style.color = "#4caf50";
+      } else if (role === "شايب") {
+        roleElement.style.borderColor = "#ff9800";
+        document.getElementById("roleName").style.color = "#ff9800";
+      }
     }
   </script>
 </body>
