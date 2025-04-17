@@ -6,17 +6,6 @@
   <title>إدارة جلسة المافيا</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    #settingsPanel {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transition: all 0.4s ease;
-    }
-    #settingsPanel.open {
-      max-height: 2000px;
-      opacity: 1;
-    }
-
     body {
       font-family: 'Tajawal', sans-serif;
       background-color: #1c1c1c;
@@ -128,7 +117,58 @@
 </head>
 <body>
   <div class="box">
-    
+    <h2>إدارة جلسة المافيا</h2>
+
+    <div class="total-players">
+      👥 عدد اللاعبين: 
+      <div class="number-control">
+        <button onclick="adjustNumber('players', -1)">-</button>
+        <input type="number" id="players" value="6" min="3" onchange="updateTotals()">
+        <button onclick="adjustNumber('players', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="roles-container">
+      <div class="role-row">
+        <div class="role-icon">👨‍🌾</div>
+        <div class="role-name">مواطن</div>
+        <div class="number-control">
+          <button onclick="adjustNumber('citizen', -1)">-</button>
+          <input type="number" id="citizen" value="2" min="0" onchange="updateTotals()">
+          <button onclick="adjustNumber('citizen', 1)">+</button>
+        </div>
+      </div>
+      <div class="role-row">
+        <div class="role-icon">🧓</div>
+        <div class="role-name">شايب</div>
+        <div class="number-control">
+          <button onclick="adjustNumber('oldman', -1)">-</button>
+          <input type="number" id="oldman" value="1" min="0" onchange="updateTotals()">
+          <button onclick="adjustNumber('oldman', 1)">+</button>
+        </div>
+      </div>
+      <div class="role-row">
+        <div class="role-icon">🕵️‍♂️</div>
+        <div class="role-name">مافيا</div>
+        <div class="number-control">
+          <button onclick="adjustNumber('mafia', -1)">-</button>
+          <input type="number" id="mafia" value="2" min="0" onchange="updateTotals()">
+          <button onclick="adjustNumber('mafia', 1)">+</button>
+        </div>
+      </div>
+      <div class="role-row">
+        <div class="role-icon">🩺</div>
+        <div class="role-name">دكتور</div>
+        <div class="number-control">
+          <button onclick="adjustNumber('doctor', -1)">-</button>
+          <input type="number" id="doctor" value="1" min="0" onchange="updateTotals()">
+          <button onclick="adjustNumber('doctor', 1)">+</button>
+        </div>
+      </div>
+      <div id="roleSum" class="total-players" style="background-color: #d32f2f;">
+        مجموع الأدوار: 6/6
+      </div>
+    </div>
 
     <div id="createSessionSection">
   <button onclick="createSession()">🚀 إنشاء الجلسة</button>
@@ -296,17 +336,6 @@
       msg.style.display = "block";
       setTimeout(() => { msg.style.display = "none"; }, 2000);
     };
-  function toggleSettings() {
-  const panel = document.getElementById("settingsPanel");
-  const btn = document.getElementById("settingsToggleBtn");
-  const isOpen = panel.classList.toggle("open");
-  btn.innerText = isOpen ? '⚙️ إعدادات الجلسة ⬆️' : '⚙️ إعدادات الجلسة ⬇️';
-} 
-} else {
-    panel.style.maxHeight = panel.scrollHeight + "px";
-    panel.style.opacity = 1;
-  }
-}
-</script>
+  </script>
 </body>
 </html>
