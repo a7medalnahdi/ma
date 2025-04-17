@@ -27,7 +27,25 @@
       border: none;
       font-weight: bold;
     }
-    input[type=number] { width: 60px; text-align: center; }
+    .number-control {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+    }
+    .number-control button {
+      background-color: #555;
+      padding: 5px 10px;
+      font-size: 20px;
+      border-radius: 50%;
+      color: white;
+    }
+    input[type=number] {
+      width: 50px;
+      text-align: center;
+      background: #444;
+      color: white;
+    }
     ul { list-style: none; padding: 0; }
     li {
       background-color: #444;
@@ -37,6 +55,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+    }
+    .player-info {
+      flex: 1;
+      text-align: right;
     }
     button {
       background-color: #d32f2f;
@@ -49,14 +72,12 @@
       color: #ffc107;
     }
     .remove-btn {
-      background: transparent;
-      border: 2px solid white;
+      background: #b71c1c;
       color: white;
       padding: 5px 10px;
       border-radius: 8px;
       cursor: pointer;
     }
-    /* إضافة نمط جديد للأدوار */
     .roles-container {
       display: flex;
       flex-direction: column;
@@ -86,6 +107,12 @@
       background-color: #3a3a3a;
       border-radius: 10px;
     }
+    #redistribution-msg {
+      color: #4caf50;
+      margin-top: 10px;
+      font-weight: bold;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -93,39 +120,56 @@
     <h2>إدارة جلسة المافيا</h2>
 
     <div class="total-players">
-      👥 عدد اللاعبين: <input type="number" id="players" value="6" min="3" onchange="updateTotals()">
+      👥 عدد اللاعبين: 
+      <div class="number-control">
+        <button onclick="adjustNumber('players', -1)">-</button>
+        <input type="number" id="players" value="6" min="3" onchange="updateTotals()">
+        <button onclick="adjustNumber('players', 1)">+</button>
+      </div>
     </div>
-    
+
     <div class="roles-container">
       <div class="role-row">
         <div class="role-icon">👨‍🌾</div>
         <div class="role-name">مواطن</div>
-        <input type="number" id="citizen" value="2" min="0" onchange="updateTotals()">
+        <div class="number-control">
+          <button onclick="adjustNumber('citizen', -1)">-</button>
+          <input type="number" id="citizen" value="2" min="0" onchange="updateTotals()">
+          <button onclick="adjustNumber('citizen', 1)">+</button>
+        </div>
       </div>
-      
       <div class="role-row">
         <div class="role-icon">🧓</div>
         <div class="role-name">شايب</div>
-        <input type="number" id="oldman" value="1" min="0" onchange="updateTotals()">
+        <div class="number-control">
+          <button onclick="adjustNumber('oldman', -1)">-</button>
+          <input type="number" id="oldman" value="1" min="0" onchange="updateTotals()">
+          <button onclick="adjustNumber('oldman', 1)">+</button>
+        </div>
       </div>
-      
       <div class="role-row">
         <div class="role-icon">🕵️‍♂️</div>
         <div class="role-name">مافيا</div>
-        <input type="number" id="mafia" value="2" min="0" onchange="updateTotals()">
+        <div class="number-control">
+          <button onclick="adjustNumber('mafia', -1)">-</button>
+          <input type="number" id="mafia" value="2" min="0" onchange="updateTotals()">
+          <button onclick="adjustNumber('mafia', 1)">+</button>
+        </div>
       </div>
-      
       <div class="role-row">
         <div class="role-icon">🩺</div>
         <div class="role-name">دكتور</div>
-        <input type="number" id="doctor" value="1" min="0" onchange="updateTotals()">
+        <div class="number-control">
+          <button onclick="adjustNumber('doctor', -1)">-</button>
+          <input type="number" id="doctor" value="1" min="0" onchange="updateTotals()">
+          <button onclick="adjustNumber('doctor', 1)">+</button>
+        </div>
       </div>
-      
       <div id="roleSum" class="total-players" style="background-color: #d32f2f;">
         مجموع الأدوار: 6/6
       </div>
     </div>
-    
+
     <button onclick="createSession()">🚀 إنشاء الجلسة</button>
     <div class="code-box" id="sessionCodeBox"></div>
 
@@ -135,6 +179,7 @@
     <button onclick="startGame()">🎲 بدء اللعبة</button>
     <button onclick="showWinnersList()">✅ توزيع النقاط</button>
     <button onclick="redistribute()">🔁 إعادة التوزيع</button>
+    <div id="redistribution-msg">✅ تم إعادة توزيع الأدوار</div>
   </div>
 
   <script type="module">
@@ -156,30 +201,27 @@
     let assignedRoles = [];
     const playersList = document.getElementById("playersList");
 
-    // إضافة دالة التحقق من مجموع الأدوار
+    window.adjustNumber = (id, change) => {
+      const input = document.getElementById(id);
+      const current = parseInt(input.value);
+      const newVal = Math.max((input.min ? parseInt(input.min) : 0), current + change);
+      input.value = newVal;
+      updateTotals();
+    };
+
     window.updateTotals = () => {
       const players = parseInt(document.getElementById("players").value);
       const citizen = parseInt(document.getElementById("citizen").value);
       const oldman = parseInt(document.getElementById("oldman").value);
       const mafia = parseInt(document.getElementById("mafia").value);
       const doctor = parseInt(document.getElementById("doctor").value);
-      
       const rolesSum = citizen + oldman + mafia + doctor;
       const roleSumElement = document.getElementById("roleSum");
-      
       roleSumElement.innerText = `مجموع الأدوار: ${rolesSum}/${players}`;
-      
-      if (rolesSum !== players) {
-        roleSumElement.style.backgroundColor = "#d32f2f"; // لون أحمر للتنبيه
-      } else {
-        roleSumElement.style.backgroundColor = "#4caf50"; // لون أخضر للتأكيد
-      }
+      roleSumElement.style.backgroundColor = rolesSum === players ? "#4caf50" : "#d32f2f";
     };
 
-    // تنفيذ الدالة عند تحميل الصفحة
-    window.onload = () => {
-      updateTotals();
-    };
+    window.onload = () => { updateTotals(); };
 
     function generateCode() {
       return Math.floor(1000 + Math.random() * 9000).toString();
@@ -191,23 +233,10 @@
       const oldman = parseInt(document.getElementById("oldman").value);
       const mafia = parseInt(document.getElementById("mafia").value);
       const doctor = parseInt(document.getElementById("doctor").value);
-      
       const rolesSum = citizen + oldman + mafia + doctor;
-      
-      if (rolesSum !== players) {
-        alert("عدد الأدوار لا يطابق عدد اللاعبين!");
-        return;
-      }
-      
+      if (rolesSum !== players) return alert("عدد الأدوار لا يطابق عدد اللاعبين!");
       sessionId = generateCode();
-      
-      const roles = {
-        citizen,
-        oldman,
-        mafia,
-        doctor
-      };
-      
+      const roles = { citizen, oldman, mafia, doctor };
       await set(ref(db, `sessions/${sessionId}`), {
         players,
         roles,
@@ -225,7 +254,7 @@
           const role = assignedRoles.find(r => r.name === p.name)?.role || "—";
           const li = document.createElement("li");
           li.innerHTML = `
-            <label><input type='checkbox' class='winner' value='${p.name}'> ${p.name} - <strong>${role}</strong> - 🏅 ${p.points || 0} نقطة</label>
+            <div class='player-info'><label><input type='checkbox' class='winner' value='${p.name}'> ${p.name} - <strong>${role}</strong> - 🏅 ${p.points || 0} نقطة</label></div>
             <button class='remove-btn' onclick="removePlayer('${p.name}')">❌</button>
           `;
           playersList.appendChild(li);
@@ -285,13 +314,10 @@
       ];
       const shuffled = pool.sort(() => Math.random() - 0.5);
       const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
-      
-      // إضافة معرّف فريد لعملية إعادة التوزيع لإجبار العداد على الظهور
-      await update(sessionRef, { 
-        assignedRoles: assigned,
-        redistribution_id: Date.now() // إضافة معرّف زمني لإعادة التوزيع
-      });
-      alert("تم إعادة توزيع الأدوار");
+      await update(sessionRef, { assignedRoles: assigned, redistribution_id: Date.now() });
+      const msg = document.getElementById("redistribution-msg");
+      msg.style.display = "block";
+      setTimeout(() => { msg.style.display = "none"; }, 2000);
     };
   </script>
 </body>
