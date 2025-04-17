@@ -1,130 +1,333 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إدارة جلسة المافيا</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
+    :root {
+      --primary: #1e1e2e;
+      --secondary: #292942;
+      --card-bg: #33334d;
+      --accent: #ff3e3e;
+      --accent-hover: #ff5252;
+      --success: #4caf50;
+      --success-dark: #388e3c;
+      --info: #2196f3;
+      --info-dark: #1976d2;
+      --warning: #ff9800;
+      --warning-dark: #f57c00;
+      --text: #ffffff;
+      --text-secondary: #b8b8d0;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
       font-family: 'Tajawal', sans-serif;
-      background: radial-gradient(circle at center, #1c1c1c 0%, #0d0d0d 100%);
-      background-size: cover;
-      color: white;
+      background: radial-gradient(circle at center, #252540, #1e1e2e);
+      color: var(--text);
+      min-height: 100vh;
       padding: 20px;
-      margin: 0;
-      overflow-x: hidden;
     }
-    .stars {
-      position: fixed;
+    
+    .box {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 30px;
+      background-color: var(--secondary);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3),
+                 inset 0 1px 1px rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .box::before {
+      content: '';
+      position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent url('https://media.giphy.com/media/3o7abB06u9bNzA8lu8/giphy.gif') repeat;
-      background-size: cover;
-      opacity: 0.08;
-      z-index: -1;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--accent), #ff9966);
+      z-index: 1;
     }
-    .box {
-      max-width: 800px;
-      margin: auto;
-      padding: 30px;
-      background: rgba(30, 30, 30, 0.9);
-      border-radius: 16px;
-      box-shadow: 0 0 40px #d32f2f88;
-      border: 2px solid #d32f2f;
-      animation: fadeIn 1s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    h2 {
-      font-size: 26px;
-      background: linear-gradient(90deg, #ff4444, #ff0000);
-      background-size: 200% auto;
-      animation: textGlow 3s linear infinite;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    
+    h2, h3 {
+      margin-bottom: 25px;
       text-align: center;
-      margin-bottom: 20px;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
     }
-    @keyframes textGlow {
-      0% { background-position: 0% center; }
-      100% { background-position: 200% center; }
+    
+    h2::after, h3::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 25%;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
+    
     input, button {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 10px;
+      padding: 12px 15px;
+      margin: 5px 0;
+      border-radius: 12px;
       border: none;
-      font-weight: bold;
+      font-weight: 500;
+      font-family: 'Tajawal', sans-serif;
     }
-    button {
-      background-color: #d32f2f;
-      color: white;
-      cursor: pointer;
-      box-shadow: 0 0 10px #d32f2f;
-      transition: 0.3s ease;
-    }
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px #ff4444, 0 0 40px #ff4444aa;
-    }
+    
     .number-control {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0;
+    }
+    
+    .number-control button {
+      background-color: var(--accent);
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      font-size: 20px;
+      border-radius: 50%;
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 8px rgba(255,62,62,0.3);
     }
-    .number-control button {
-      background-color: #fff;
-      color: #d32f2f;
-      font-size: 20px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
+    
+    .number-control button:hover {
+      transform: scale(1.1);
+      background-color: var(--accent-hover);
     }
+    
     input[type=number] {
-      width: 50px;
+      width: 60px;
       text-align: center;
-      background: #444;
+      background: rgba(255,255,255,0.1);
       color: white;
+      font-size: 18px;
+      border: 2px solid rgba(255,255,255,0.2);
     }
-    .code-box {
-      background-color: #333;
-      padding: 20px;
+    
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+    
+    li {
+      margin: 12px 0;
+      padding: 15px;
       border-radius: 15px;
-      font-size: 36px;
-      font-weight: bold;
-      letter-spacing: 4px;
-      color: #4caf50;
-      margin: 20px auto;
-      border: 2px dashed #4caf50;
-      text-align: center;
-    }
-    .player-list li {
-      background-color: #2a2a2a;
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 12px;
+      background: linear-gradient(145deg, #33334d, #3d3d5c);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      transition: transform 0.3s ease;
     }
-    @media (max-width: 600px) {
-      .box { padding: 20px; }
-      .code-box { font-size: 28px; }
+    
+    li:hover {
+      transform: translateY(-3px);
+    }
+    
+    .player-info {
+      flex: 1;
+      text-align: right;
+    }
+    
+    button {
+      background: linear-gradient(135deg, var(--accent), #ff6b4a);
+      color: white;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    .code-box {
+      margin: 25px auto;
+      padding: 25px;
+      background-color: var(--card-bg);
+      border-radius: 15px;
+      font-size: 42px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 8px;
+      color: #4caf50;
+      position: relative;
+      overflow: hidden;
+      border: 2px dashed #4caf50;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-shadow: 0 0 10px rgba(76,175,80,0.3);
+      animation: pulse 1.5s infinite alternate;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 8px 20px rgba(0,0,0,0.2), 0 0 0 rgba(76,175,80,0.1); }
+      100% { box-shadow: 0 8px 20px rgba(0,0,0,0.2), 0 0 20px rgba(76,175,80,0.3); }
+    }
+    
+    .remove-btn {
+      background: linear-gradient(135deg, #f44336, #d32f2f);
+      padding: 8px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    
+    .roles-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 20px 0;
+      background-color: var(--card-bg);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+    }
+    
+    .role-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+    
+    .role-row:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .role-icon {
+      font-size: 1.8rem;
+      width: 40px;
+      text-align: center;
+      text-shadow: 0 0 5px rgba(255,255,255,0.5);
+    }
+    
+    .role-name {
+      flex: 1;
+      text-align: right;
+      padding-right: 15px;
+      font-weight: 500;
+    }
+    
+    .total-players {
+      margin: 15px 0;
+      padding: 15px;
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 500;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #actionButtons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+    
+    #actionButtons button {
+      flex: 1 1 auto;
+      min-width: 150px;
+      padding: 15px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #startGameBtn {
+      background: linear-gradient(135deg, var(--info), var(--info-dark));
+    }
+    
+    #pointsBtn {
+      background: linear-gradient(135deg, var(--success), var(--success-dark));
+    }
+    
+    #redistributeBtn {
+      background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+    }
+    
+    .msg-box {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 30px;
+      border-radius: 50px;
+      background-color: var(--success);
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      display: none;
+      animation: slideUp 0.3s ease-out forwards;
+      z-index: 1000;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translate(-50%, 100%); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+    
+    @media screen and (max-width: 480px) {
+      .box {
+        padding: 20px 15px;
+      }
+      
+      #actionButtons {
+        flex-direction: column;
+      }
+      
+      .code-box {
+        font-size: 32px;
+        letter-spacing: 6px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="box">
-    <h2>إدارة جلسة المافيا</h2>
+    <h2>⚙️ إدارة جلسة المافيا</h2>
 
     <div class="total-players">
       👥 عدد اللاعبين: 
@@ -137,103 +340,73 @@
 
     <div class="roles-container">
       <div class="role-row">
-        <div class="role-icon">👨‍🌾</div>
-        <div class="role-name">مواطن</div>
         <div class="number-control">
           <button onclick="adjustNumber('citizen', -1)">-</button>
           <input type="number" id="citizen" value="2" min="0" onchange="updateTotals()">
           <button onclick="adjustNumber('citizen', 1)">+</button>
         </div>
+        <div class="role-name">مواطن</div>
+        <div class="role-icon">👨‍🌾</div>
       </div>
+      
       <div class="role-row">
-        <div class="role-icon">🧓</div>
-        <div class="role-name">شايب</div>
         <div class="number-control">
           <button onclick="adjustNumber('oldman', -1)">-</button>
           <input type="number" id="oldman" value="1" min="0" onchange="updateTotals()">
           <button onclick="adjustNumber('oldman', 1)">+</button>
         </div>
+        <div class="role-name">شايب</div>
+        <div class="role-icon">🧓</div>
       </div>
+      
       <div class="role-row">
-        <div class="role-icon">🕵️‍♂️</div>
-        <div class="role-name">مافيا</div>
         <div class="number-control">
           <button onclick="adjustNumber('mafia', -1)">-</button>
           <input type="number" id="mafia" value="2" min="0" onchange="updateTotals()">
           <button onclick="adjustNumber('mafia', 1)">+</button>
         </div>
+        <div class="role-name">مافيا</div>
+        <div class="role-icon">🕵️‍♂️</div>
       </div>
+      
       <div class="role-row">
-        <div class="role-icon">🩺</div>
-        <div class="role-name">دكتور</div>
         <div class="number-control">
           <button onclick="adjustNumber('doctor', -1)">-</button>
           <input type="number" id="doctor" value="1" min="0" onchange="updateTotals()">
           <button onclick="adjustNumber('doctor', 1)">+</button>
         </div>
+        <div class="role-name">دكتور</div>
+        <div class="role-icon">🩺</div>
       </div>
-      <div id="roleSum" class="total-players" style="background-color: #d32f2f;">
+      
+      <div id="roleSum" class="total-players" style="background-color: var(--success);">
         مجموع الأدوار: 6/6
       </div>
     </div>
 
     <div id="createSessionSection">
-  <button onclick="createSession()">🚀 إنشاء الجلسة</button>
-</div>
-<div class="code-box" id="sessionCodeBox" style="display: none;
-  background-color: #333;
-  padding: 20px;
-  border-radius: 15px;
-  font-size: 36px;
-  font-weight: bold;
-  letter-spacing: 4px;
-  color: #4caf50;
-  margin-top: 15px;
-  border: 2px dashed #4caf50;"></div>
+      <button onclick="createSession()" style="width: 100%; padding: 16px;">🚀 إنشاء الجلسة</button>
+    </div>
+    
+    <div id="sessionCodeBox" class="code-box" style="display: none;"></div>
 
-    <h3>اللاعبين:</h3>
+    <h3>👥 اللاعبين</h3>
     <ul id="playersList"></ul>
 
-    <div id="actionButtons" style="display: flex; flex-wrap: nowrap; gap: 10px; justify-content: center; flex-direction: row; margin-top: 20px;">
-  <button id="startGameBtn" onclick="startGame()" style="
-    background: linear-gradient(135deg, #1976d2, #0d47a1);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
-  " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
-    🎲 بدء اللعبة
-  </button>
-  <button id="pointsBtn" onclick="showWinnersList()" style="display: none; flex: 1 1 auto;
-    background: linear-gradient(135deg, #388e3c, #1b5e20);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
-  " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
-    ✅ توزيع النقاط
-  </button>
-  <button id="redistributeBtn" onclick="redistribute()" style="display: none; flex: 1 1 auto;
-    background: linear-gradient(135deg, #f57c00, #e65100);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
-  " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.3)';">
-    🔁 إعادة التوزيع
-  </button>
-</div>
-    <div id="redistribution-msg">✅ تم إعادة توزيع الأدوار</div>
-    <div id="points-msg">✅ تم توزيع النقاط</div>
+    <div id="actionButtons">
+      <button id="startGameBtn" onclick="startGame()">
+        🎲 بدء اللعبة
+      </button>
+      <button id="pointsBtn" onclick="showWinnersList()" style="display: none;">
+        ✅ توزيع النقاط
+      </button>
+      <button id="redistributeBtn" onclick="redistribute()" style="display: none;">
+        🔁 إعادة التوزيع
+      </button>
+    </div>
+    
+    <div id="redistribution-msg" class="msg-box">✅ تم إعادة توزيع الأدوار</div>
+    <div id="points-msg" class="msg-box">✅ تم توزيع النقاط</div>
   </div>
 
   <script type="module">
@@ -272,7 +445,7 @@
       const rolesSum = citizen + oldman + mafia + doctor;
       const roleSumElement = document.getElementById("roleSum");
       roleSumElement.innerText = `مجموع الأدوار: ${rolesSum}/${players}`;
-      roleSumElement.style.backgroundColor = rolesSum === players ? "#4caf50" : "#d32f2f";
+      roleSumElement.style.backgroundColor = rolesSum === players ? "var(--success)" : "var(--accent)";
     };
 
     window.onload = () => { updateTotals(); };
@@ -309,91 +482,98 @@
         playersList.innerHTML = "";
         data.playersList?.forEach(p => {
           const role = assignedRoles.find(r => r.name === p.name)?.role || "—";
+          const roleBadge = getRoleBadge(role);
           const li = document.createElement("li");
           li.innerHTML = `
-  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 15px; flex-wrap: wrap; background: linear-gradient(135deg, #2a2a2a, #3a3a3a); border: 1px solid #555; border-radius: 16px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.4);">
-    <div style="flex: 1; text-align: right;">
-      <div style="font-size: 20px; font-weight: bold; color: #fff;">👤 ${p.name}</div>
-      <div style="font-size: 16px; color: #bbb; margin-top: 5px;">🎭 الدور: <strong style="color:#4caf50">${role}</strong></div>
-      <div style="font-size: 14px; color: #888; margin-top: 5px;">🏅 النقاط: ${p.points || 0}</div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-      <input type='checkbox' class='winner' value='${p.name}' title="اختيار كفائز" style="transform: scale(1.5); cursor: pointer;">
-      <button class='remove-btn' onclick="confirmRemovePlayer('${p.name}')" style="
-        background: linear-gradient(135deg, #ff1744, #d50000);
-        padding: 8px;
-        border: none;
-        border-radius: 10px;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        transition: transform 0.2s, box-shadow 0.2s;
-      " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 10px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.3)';">
-        <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='white' viewBox='0 0 16 16'>
-          <path d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/>
-        </svg>
-      </button>
-    </div>
-  `;
+            <div style="flex: 1; text-align: right;">
+              <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">👤 ${p.name}</div>
+              <div style="font-size: 16px; color: var(--text-secondary);">
+                🎭 الدور: ${roleBadge}
+                <span style="margin-right: 5px; color: var(--text);">${role}</span>
+              </div>
+              <div style="font-size: 14px; color: var(--text-secondary); margin-top: 5px;">
+                🏅 النقاط: <span style="color: #ffc107; font-weight: bold;">${p.points || 0}</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+              <label style="
+                display: block;
+                width: 24px;
+                height: 24px;
+                background-color: var(--card-bg);
+                border-radius: 6px;
+                border: 2px solid var(--accent);
+                position: relative;
+                cursor: pointer;
+                transition: all 0.2s ease;
+              ">
+                <input type="checkbox" class="winner" value="${p.name}" title="اختيار كفائز" style="
+                  opacity: 0;
+                  position: absolute;
+                ">
+                <span style="
+                  position: absolute;
+                  top: 1px;
+                  left: 1px;
+                  width: 18px;
+                  height: 18px;
+                  border-radius: 3px;
+                  background-color: var(--accent);
+                  transform: scale(0);
+                  transition: all 0.2s ease;
+                "></span>
+              </label>
+              <button class="remove-btn" onclick="confirmRemovePlayer('${p.name}')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" viewBox="0 0 16 16">
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+              </button>
+            </div>
+          `;
           playersList.appendChild(li);
+          
+          // Style checkbox behavior
+          const checkbox = li.querySelector('input[type="checkbox"]');
+          const span = li.querySelector('span');
+          
+          checkbox.addEventListener('change', function() {
+            if (this.checked) {
+              span.style.transform = 'scale(1)';
+            } else {
+              span.style.transform = 'scale(0)';
+            }
+          });
         });
       });
     };
-
-    window.confirmRemovePlayer = (name) => {
-  if (confirm(`هل أنت متأكد من حذف اللاعب: ${name}؟`)) {
-    removePlayer(name);
-  }
-};
-
-window.removePlayer = async (name) => {
-  const sessionRef = ref(db, `sessions/${sessionId}`);
-  const snap = await get(sessionRef);
-  const players = snap.val().playersList.filter(p => p.name !== name);
-  await update(sessionRef, { playersList: players });
-};
-
-    window.startGame = async () => {
-  document.getElementById('startGameBtn').style.display = 'none';
-  document.getElementById('pointsBtn').style.display = 'inline-block';
-  document.getElementById('redistributeBtn').style.display = 'inline-block';
-      const sessionRef = ref(db, `sessions/${sessionId}`);
-      const snap = await get(sessionRef);
-      const data = snap.val();
-      const pool = [
-        ...Array(data.roles.citizen).fill("مواطن"),
-        ...Array(data.roles.oldman).fill("شايب"),
-        ...Array(data.roles.mafia).fill("مافيا"),
-        ...Array(data.roles.doctor).fill("دكتور")
-      ];
-      const shuffled = pool.sort(() => Math.random() - 0.5);
-      const assigned = data.playersList.map((p, i) => ({ name: p.name, role: shuffled[i] || "مواطن" }));
-      await update(sessionRef, { started: true, assignedRoles: assigned });
-    };
-
-    window.showWinnersList = () => {
-      const checkboxes = document.querySelectorAll('.winner');
-      const winners = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-      givePoints(winners);
-    };
-
-    async function givePoints(winners) {
-      const sessionRef = ref(db, `sessions/${sessionId}`);
-      const snap = await get(sessionRef);
-      const list = snap.val().playersList.map(p => {
-        if (winners.includes(p.name)) p.points = (p.points || 0) + 100;
-        return p;
-      });
-      await update(sessionRef, { playersList: list });
-      const msg = document.getElementById("points-msg");
-      msg.style.display = "block";
-      setTimeout(() => { msg.style.display = "none"; }, 2000);
+    
+    function getRoleBadge(role) {
+      switch(role) {
+        case "مواطن": return "👨‍🌾";
+        case "شايب": return "🧓";
+        case "مافيا": return "🕵️‍♂️";
+        case "دكتور": return "🩺";
+        default: return "❓";
+      }
     }
 
-    window.redistribute = async () => {
+    window.confirmRemovePlayer = (name) => {
+      if (confirm(`هل أنت متأكد من حذف اللاعب: ${name}؟`)) {
+        removePlayer(name);
+      }
+    };
+
+    window.removePlayer = async (name) => {
+      const sessionRef = ref(db, `sessions/${sessionId}`);
+      const snap = await get(sessionRef);
+      const players = snap.val().playersList.filter(p => p.name !== name);
+      await update(sessionRef, { playersList: players });
+    };
+
+    window.startGame = async () => {
+      document.getElementById('startGameBtn').style.display = 'none';
+      document.getElementById('pointsBtn').style.display = 'inline-block';
+      document.getElementById('redistributeBtn').style.display = 'inline-block';
       const sessionRef = ref(db, `sessions/${sessionId}`);
       const snap = await get(sessionRef);
       const data = snap.val();

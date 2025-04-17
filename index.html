@@ -1,117 +1,164 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>مافيا - البداية</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #1e1e2e;
+      --secondary: #292942;
+      --accent: #ff3e3e;
+      --accent-hover: #ff5252;
+      --text: #ffffff;
+      --text-secondary: #b8b8d0;
+    }
+    
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
+    
     body {
       font-family: 'Tajawal', sans-serif;
-      background: radial-gradient(circle at center, #1c1c1c 0%, #0d0d0d 100%);
-      background-size: cover;
-      color: white;
+      background: radial-gradient(circle at center, #252540, #1e1e2e);
+      color: var(--text);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
-      min-height: 100vh;
-      margin: 0;
-      overflow: hidden;
       padding: 20px;
     }
+    
     .container {
-      background: rgba(30, 30, 30, 0.85);
-      padding: 30px;
-      border-radius: 16px;
+      background-color: var(--secondary);
+      padding: 40px 30px;
+      border-radius: 24px;
       max-width: 400px;
       width: 100%;
-      box-shadow: 0 0 40px #d32f2f88;
-      border: 2px solid #d32f2f;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4), 
+                 0 4px 6px rgba(0,0,0,0.2),
+                 inset 0 1px 1px rgba(255,255,255,0.1);
       text-align: center;
       position: relative;
-      z-index: 2;
+      overflow: hidden;
     }
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--accent), #ff9966);
+      z-index: 1;
+    }
+    
     h1 {
-      margin-bottom: 30px;
-      font-size: 6vw;
-      max-font-size: 28px;
-      background: linear-gradient(90deg, #ff4444, #ff0000);
-      background-size: 200% auto;
-      animation: textGlow 3s linear infinite;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      margin-bottom: 40px;
+      font-size: 36px;
+      position: relative;
+      display: inline-block;
     }
-    @keyframes textGlow {
-      0% { background-position: 0% center; }
-      100% { background-position: 200% center; }
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 25%;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
-    button {
+    
+    .btn {
       width: 100%;
-      padding: 15px;
-      border-radius: 10px;
+      padding: 18px 20px;
+      border-radius: 14px;
       border: none;
-      font-size: 16px;
-      margin: 10px 0;
-      background-color: #d32f2f;
-      color: white;
-      font-weight: bold;
+      font-size: 18px;
+      margin: 16px 0;
+      background: linear-gradient(135deg, var(--accent), #ff6b4a);
+      color: var(--text);
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 0 10px #d32f2f;
-      transition: 0.3s ease;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 12px rgba(255,62,62,0.3);
+      position: relative;
+      overflow: hidden;
     }
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px #ff4444, 0 0 40px #ff4444aa;
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255,62,62,0.4);
     }
-    .logo {
-      width: 20vw;
-      max-width: 100px;
-      margin-bottom: 20px;
-      animation: pulse 2s infinite;
+    
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 10px rgba(255,62,62,0.3);
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+    
+    .btn span {
+      margin-right: 12px;
+      font-size: 22px;
     }
-    .stars {
+    
+    .shadow-effect {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: transparent url('https://media.giphy.com/media/3o7abB06u9bNzA8lu8/giphy.gif') repeat;
-      background-size: cover;
-      opacity: 0.08;
-      z-index: 1;
+      background: rgba(0,0,0,0.05);
+      transform: skewX(45deg) translateX(-150%);
+      transition: all 0.7s ease;
     }
-    @media (max-width: 480px) {
+    
+    .btn:hover .shadow-effect {
+      transform: skewX(45deg) translateX(150%);
+    }
+    
+    .version {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+    
+    @media (max-width: 400px) {
       .container {
-        padding: 20px;
+        padding: 30px 20px;
       }
-      button {
-        padding: 12px;
-        font-size: 15px;
+      
+      h1 {
+        font-size: 28px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="stars"></div>
-  <div class="container" data-aos="zoom-in">
-    <img src="logo.png" alt="شعار اللعبة" class="logo" data-aos="fade-down">
-    <h1 data-aos="fade-up">🎭 لعبة المافيا</h1>
-    <button onclick="location.href='admin.html'" data-aos="fade-up" data-aos-delay="100">🚀 إنشاء جلسة (مدير)</button>
-    <button onclick="location.href='game.html'" data-aos="fade-up" data-aos-delay="200">🎮 دخول جلسة (لاعب)</button>
+  <div class="container">
+    <h1>🎭 لعبة المافيا</h1>
+    
+    <button class="btn" onclick="location.href='admin.html'">
+      <span>🚀</span> إنشاء جلسة جديدة
+      <div class="shadow-effect"></div>
+    </button>
+    
+    <button class="btn" onclick="location.href='game.html'" style="background: linear-gradient(135deg, #4a6bff, #2a3fd8);">
+      <span>🎮</span> انضمام لجلسة
+      <div class="shadow-effect"></div>
+    </button>
+    
+    <div class="version">v1.0</div>
   </div>
-
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init();
-  </script>
 </body>
 </html>
